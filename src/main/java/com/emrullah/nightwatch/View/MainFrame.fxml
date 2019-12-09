@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.emrullah.nightwatch.Controller.MainFrameController">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.emrullah.nightwatch.Controller.MainFrameController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -61,7 +60,10 @@
           </font>
         </Label>
             <ListView layoutX="14.0" prefHeight="375.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Button layoutX="208.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Button" AnchorPane.leftAnchor="208.0" AnchorPane.topAnchor="14.0" />
+            <Button layoutX="208.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Start Watching" AnchorPane.leftAnchor="208.0" AnchorPane.topAnchor="14.0" />
+            <Button layoutX="316.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Stop Watching" AnchorPane.leftAnchor="316.0" AnchorPane.topAnchor="14.0" />
+            <Button layoutX="425.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Compile" />
+            <Button layoutX="533.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Compile" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="14.0" />
       </children>
     </AnchorPane>
   </children>
