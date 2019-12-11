@@ -54,8 +54,8 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="768.0" minWidth="1024.0" prefHeight="784.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
       <children>
-            <ListView fx:id="registerList" layoutX="14.0" prefHeight="768.0" prefWidth="338.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Button fx:id="registerButton" disable="true" layoutX="357.0" layoutY="50.0" mnemonicParsing="false" onAction="#registerToFolders" prefHeight="25.0" prefWidth="96.0" text="Register" AnchorPane.leftAnchor="357.0" AnchorPane.topAnchor="50.0" />
+            <ListView fx:id="registerList" layoutX="14.0" prefHeight="723.0" prefWidth="338.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Button fx:id="registerButton" disable="true" layoutX="357.0" layoutY="50.0" mnemonicParsing="false" onAction="#listOfModulesForTheWatching" prefHeight="25.0" prefWidth="96.0" text="Register" AnchorPane.leftAnchor="357.0" AnchorPane.topAnchor="50.0" />
             <Button fx:id="watchButton" disable="true" layoutX="465.0" layoutY="50.0" mnemonicParsing="false" onAction="#startWatching" prefHeight="25.0" prefWidth="96.0" text="Start Watching" AnchorPane.leftAnchor="465.0" AnchorPane.topAnchor="50.0" />
             <Button fx:id="compilerButton" disable="true" layoutX="572.0" layoutY="50.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Compile" />
             <Button fx:id="openPathButton" layoutX="357.0" layoutY="14.0" mnemonicParsing="false" onAction="#openPathDialog" prefHeight="25.0" prefWidth="96.0" text="Open" AnchorPane.leftAnchor="357.0" AnchorPane.topAnchor="14.0" />
@@ -65,7 +65,7 @@
             <Label layoutX="626.0" layoutY="85.0" text="File changes :" />
             <Label layoutX="581.0" layoutY="85.0" text="0" />
             <Label layoutX="492.0" layoutY="85.0" text="Total modules :" />
-            <TextArea fx:id="commandLineArea" disable="true" layoutX="359.0" layoutY="116.0" prefHeight="610.0" prefWidth="643.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="359.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="116.0" />
+            <TextArea fx:id="commandLineArea" editable="false" focusTraversable="false" layoutX="359.0" layoutY="116.0" mouseTransparent="true" prefHeight="610.0" prefWidth="643.0" AnchorPane.bottomAnchor="42.0" AnchorPane.leftAnchor="359.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="116.0" />
       </children>
     </AnchorPane>
   </children>

@@ -2,13 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6dbbd3a4-6a05-4c5d-b6c6-1b29099303d8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/img/logo.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Base/ApplicationInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Base/ApplicationInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Base/IWatcherServiceInitializr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Base/IWatcherServiceInitializr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Common/WatcherServiceInitializr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Common/WatcherServiceInitializr.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Controller/MainFrameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Controller/MainFrameController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/View/MainFrame.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/View/MainFrame.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/hellofx.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/MainFrame.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MainFrame.fxml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -99,7 +98,8 @@
       <updated>1575664159636</updated>
       <workItem from="1575664164075" duration="2212000" />
       <workItem from="1575908621261" duration="6395000" />
-      <workItem from="1575915118152" duration="4811000" />
+      <workItem from="1575915118152" duration="5429000" />
+      <workItem from="1576088366982" duration="6806000" />
     </task>
     <servers />
   </component>
@@ -124,7 +124,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/emrullah/nightwatch/Common/WatcherServiceInitializr.java</url>
-          <line>48</line>
+          <line>31</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
