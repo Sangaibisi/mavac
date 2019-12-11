@@ -1,4 +1,4 @@
-![GitHub Logo](assets/img/logo.jpg)
+![GitHub Logo](assets/img/logo.jpeg)
 # Foobar
 
 Foobar is a Python library for dealing with word pluralization.
