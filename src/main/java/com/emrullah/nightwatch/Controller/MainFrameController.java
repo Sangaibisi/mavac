@@ -1,32 +1,49 @@
 package com.emrullah.nightwatch.Controller;
 
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class MainFrameController {
+
+    @FXML
+    public Button registerButton;
+    @FXML
+    public Button openPathButton;
+    @FXML
+    public Button watchButton;
+    @FXML
+    public Button compilerButton;
+    @FXML
+    public TextArea commandLineArea;
+    @FXML
+    public Label totalWatches;
+    @FXML
+    public Label totalModules;
+    @FXML
+    public TableColumn<com.emrullah.nightwatch.Model.TableView, String> module;
+    @FXML
+    public TableColumn<com.emrullah.nightwatch.Model.TableView, CheckBox> checkBox;
+    @FXML
+    public TableView registerList;
+
+
     WatcherServiceInitializr watcherServiceInitializr = null;
     WatchService nightWatcher = null;
+    ObservableList<com.emrullah.nightwatch.Model.TableView> moduleList = FXCollections.observableArrayList();
 
-    public Button registerButton;
-    public Button openPathButton;
-    public Button watchButton;
-    public Button compilerButton;
-    public TextArea commandLineArea;
-    public ListView registerList;
-    public Label totalWatches;
 
     public void openPathDialog() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -40,14 +57,23 @@ public class MainFrameController {
 
     public void listOfModulesForTheWatching() {
         List<File> listOfModules = watcherServiceInitializr.listOfModules();
-        if(listOfModules == null || listOfModules.size() == 0){
+        if (listOfModules == null || listOfModules.size() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("What am i supposed to do?");
             alert.setContentText("This root folder is empty. Nothing to watch!");
             alert.showAndWait();
-        }else {
-            registerList.getItems().addAll(listOfModules);
+        } else {
+            for (File dir : listOfModules) {
+                CheckBox checkBox = new CheckBox();
+                moduleList.add(new com.emrullah.nightwatch.Model.TableView(dir.getPath(), checkBox));
+            }
+
+            module.setCellValueFactory(new PropertyValueFactory<>("path"));
+            checkBox.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+
+            registerList.setItems(moduleList);
             watchButton.setDisable(false);
+            totalModules.setText(String.valueOf(listOfModules.size()));
         }
     }
 
