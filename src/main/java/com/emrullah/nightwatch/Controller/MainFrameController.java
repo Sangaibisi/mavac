@@ -1,6 +1,7 @@
 package com.emrullah.nightwatch.Controller;
 
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
+import com.github.lalyos.jfiglet.FigletFont;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,7 +15,6 @@ import java.nio.file.WatchService;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 
 public class MainFrameController {
 
@@ -65,10 +65,12 @@ public class MainFrameController {
         } else {
             for (File dir : listOfModules) {
                 CheckBox checkBox = new CheckBox();
-                moduleList.add(new com.emrullah.nightwatch.Model.TableView(dir.getPath(), checkBox));
+                moduleList.add(new com.emrullah.nightwatch.Model.TableView(dir.getName(), checkBox));
             }
 
             module.setCellValueFactory(new PropertyValueFactory<>("path"));
+            module.setStyle( "-fx-alignment: CENTER;");
+            checkBox.setStyle( "-fx-alignment: CENTER;");
             checkBox.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
 
             registerList.setItems(moduleList);
@@ -78,6 +80,7 @@ public class MainFrameController {
     }
 
     public void startWatching() {
+        writeIntro();
         try {
             nightWatcher = watcherServiceInitializr.initializeWatchService();
 
@@ -103,5 +106,10 @@ public class MainFrameController {
             System.out.println("System Error during listening folders");
             e.printStackTrace();
         }
+    }
+
+    private void writeIntro() {
+        commandLineArea.setText(commandLineArea.getText()+FigletFont.convertOneLine("Welcome"));
+        commandLineArea.setText(commandLineArea.getText()+FigletFont.convertOneLine("NightWatch    is    begin"));
     }
 }
