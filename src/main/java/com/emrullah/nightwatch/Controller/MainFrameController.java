@@ -19,13 +19,13 @@ import java.util.concurrent.Executors;
 public class MainFrameController {
 
     @FXML
-    public Button registerButton;
-    @FXML
     public Button openPathButton;
     @FXML
     public Button watchButton;
     @FXML
     public Button compilerButton;
+    @FXML
+    public Button stopWatchingButton;
     @FXML
     public TextArea commandLineArea;
     @FXML
@@ -51,11 +51,40 @@ public class MainFrameController {
         File selectedFile = directoryChooser.showDialog(openPathButton.getScene().getWindow());
 
         watcherServiceInitializr = new WatcherServiceInitializr(selectedFile.getPath());
-
-        registerButton.setDisable(false);
+        addItemsToTableView();
     }
 
-    public void listOfModulesForTheWatching() {
+    public void startWatching() {
+        writeIntro();
+        stopWatchingButton.setDisable(false);
+        registerList.setDisable(true);
+        try {
+            nightWatcher = watcherServiceInitializr.initializeWatchService();
+
+            totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
+            watchButton.setDisable(false);
+            compilerButton.setDisable(false);
+            openPathButton.setDisable(true);
+
+            ExecutorService executor = Executors.newFixedThreadPool(2);
+            executor.execute(() -> {
+                try {
+                    watcherServiceInitializr.startListening(nightWatcher, commandLineArea);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } catch (IOException e) {
+            System.out.println("Watcher service couldn't initialize. Given path couldn't be a directory.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("System Error during listening folders");
+            e.printStackTrace();
+        }
+    }
+
+    private void addItemsToTableView() {
         List<File> listOfModules = watcherServiceInitializr.listOfModules();
         if (listOfModules == null || listOfModules.size() == 0) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -74,37 +103,10 @@ public class MainFrameController {
             checkBox.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
 
             registerList.setItems(moduleList);
-            watchButton.setDisable(false);
             totalModules.setText(String.valueOf(listOfModules.size()));
-        }
-    }
 
-    public void startWatching() {
-        writeIntro();
-        try {
-            nightWatcher = watcherServiceInitializr.initializeWatchService();
-
-            totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
             watchButton.setDisable(false);
-            compilerButton.setDisable(false);
-            registerButton.setDisable(true);
             openPathButton.setDisable(true);
-
-            ExecutorService executor = Executors.newFixedThreadPool(2);
-            executor.execute(() -> {
-                try {
-                    watcherServiceInitializr.startListening(nightWatcher, commandLineArea);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-        } catch (IOException e) {
-            System.out.println("Watcher service couldn't initialize. Given path couldn't be a directory.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("System Error during listening folders");
-            e.printStackTrace();
         }
     }
 
