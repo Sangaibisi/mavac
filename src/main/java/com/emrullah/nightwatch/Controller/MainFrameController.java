@@ -2,6 +2,8 @@ package com.emrullah.nightwatch.Controller;
 
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
 import com.github.lalyos.jfiglet.FigletFont;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -55,6 +57,9 @@ public class MainFrameController {
     }
 
     public void startWatching() {
+
+       commandLineArea.setText(getSelectedModuleList().toString());
+        /*
         writeIntro();
         stopWatchingButton.setDisable(false);
         registerList.setDisable(true);
@@ -81,7 +86,20 @@ public class MainFrameController {
         } catch (Exception e) {
             System.out.println("System Error during listening folders");
             e.printStackTrace();
+        }*/
+    }
+
+    private ObservableList<com.emrullah.nightwatch.Model.TableView> getSelectedModuleList(){
+        if(moduleList == null || moduleList.isEmpty()){
+            return null;
         }
+        ObservableList<com.emrullah.nightwatch.Model.TableView> selectedModuleList = FXCollections.observableArrayList();
+        for(com.emrullah.nightwatch.Model.TableView item : moduleList){
+            if(item.getCheckBox().isSelected()){
+                selectedModuleList.add(item);
+            }
+        }
+        return selectedModuleList;
     }
 
     private void addItemsToTableView() {
