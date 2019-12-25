@@ -1,9 +1,8 @@
 package com.emrullah.nightwatch.Controller;
 
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
+import com.emrullah.nightwatch.Model.TableViewItem;
 import com.github.lalyos.jfiglet.FigletFont;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,16 +34,15 @@ public class MainFrameController {
     @FXML
     public Label totalModules;
     @FXML
-    public TableColumn<com.emrullah.nightwatch.Model.TableView, String> module;
+    public TableColumn<TableViewItem, String> module;
     @FXML
-    public TableColumn<com.emrullah.nightwatch.Model.TableView, CheckBox> checkBox;
+    public TableColumn<TableViewItem, CheckBox> checkBox;
     @FXML
     public TableView registerList;
 
-
     WatcherServiceInitializr watcherServiceInitializr = null;
     WatchService nightWatcher = null;
-    ObservableList<com.emrullah.nightwatch.Model.TableView> moduleList = FXCollections.observableArrayList();
+    ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
 
 
     public void openPathDialog() {
@@ -67,12 +65,12 @@ public class MainFrameController {
             alert.setContentText("This root folder is empty. Nothing to watch!");
             alert.showAndWait();
         }else if(getSelectedModuleList().isEmpty()){
-            for( com.emrullah.nightwatch.Model.TableView item : moduleList){
+            for( TableViewItem item : moduleList){
                 item.getCheckBox().setSelected(true);
             }
             commandLineArea.setText(commandLineArea.getText()+"\n All modules will be under watch!");
         }
-      /*  try {
+        try {
             nightWatcher = watcherServiceInitializr.initializeWatchService();
 
             totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
@@ -95,15 +93,15 @@ public class MainFrameController {
         } catch (Exception e) {
             System.out.println("System Error during listening folders");
             e.printStackTrace();
-        }*/
+        }
     }
 
-    private ObservableList<com.emrullah.nightwatch.Model.TableView> getSelectedModuleList(){
+    private ObservableList<TableViewItem> getSelectedModuleList(){
         if(moduleList == null || moduleList.isEmpty()){
             return null;
         }
-        ObservableList<com.emrullah.nightwatch.Model.TableView> selectedModuleList = FXCollections.observableArrayList();
-        for(com.emrullah.nightwatch.Model.TableView item : moduleList){
+        ObservableList<TableViewItem> selectedModuleList = FXCollections.observableArrayList();
+        for(TableViewItem item : moduleList){
             if(item.getCheckBox().isSelected()){
                 selectedModuleList.add(item);
             }
@@ -121,7 +119,7 @@ public class MainFrameController {
         } else {
             for (File dir : listOfModules) {
                 CheckBox checkBox = new CheckBox();
-                moduleList.add(new com.emrullah.nightwatch.Model.TableView(dir, dir.getName(), checkBox));
+                moduleList.add(new TableViewItem(dir, dir.getName(), checkBox));
             }
 
             module.setCellValueFactory(new PropertyValueFactory<>("fileName"));

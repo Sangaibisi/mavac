@@ -4,13 +4,13 @@ import javafx.scene.control.CheckBox;
 
 import java.io.File;
 
-public class TableView {
+public class TableViewItem {
 
     private File file;
     private String fileName;
     private CheckBox checkBox;
 
-    public TableView(File file, String fileName, CheckBox checkBox) {
+    public TableViewItem(File file, String fileName, CheckBox checkBox) {
         this.fileName = fileName;
         this.checkBox = checkBox;
         this.file=file;
