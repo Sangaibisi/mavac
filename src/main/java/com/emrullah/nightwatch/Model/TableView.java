@@ -6,20 +6,30 @@ import java.io.File;
 
 public class TableView {
 
-    private String path;
+    private File file;
+    private String fileName;
     private CheckBox checkBox;
 
-    public TableView(String path, CheckBox checkBox) {
-        this.path = path;
+    public TableView(File file, String fileName, CheckBox checkBox) {
+        this.fileName = fileName;
         this.checkBox = checkBox;
+        this.file=file;
     }
 
-    public String getPath() {
-        return path;
+    public File getFile() {
+        return file;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public CheckBox getCheckBox() {

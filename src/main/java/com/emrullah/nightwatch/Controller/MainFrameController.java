@@ -57,13 +57,22 @@ public class MainFrameController {
     }
 
     public void startWatching() {
-
-       commandLineArea.setText(getSelectedModuleList().toString());
-        /*
         writeIntro();
         stopWatchingButton.setDisable(false);
         registerList.setDisable(true);
-        try {
+
+        if(getSelectedModuleList() == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("What am i supposed to do?");
+            alert.setContentText("This root folder is empty. Nothing to watch!");
+            alert.showAndWait();
+        }else if(getSelectedModuleList().isEmpty()){
+            for( com.emrullah.nightwatch.Model.TableView item : moduleList){
+                item.getCheckBox().setSelected(true);
+            }
+            commandLineArea.setText(commandLineArea.getText()+"\n All modules will be under watch!");
+        }
+      /*  try {
             nightWatcher = watcherServiceInitializr.initializeWatchService();
 
             totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
@@ -112,10 +121,10 @@ public class MainFrameController {
         } else {
             for (File dir : listOfModules) {
                 CheckBox checkBox = new CheckBox();
-                moduleList.add(new com.emrullah.nightwatch.Model.TableView(dir.getName(), checkBox));
+                moduleList.add(new com.emrullah.nightwatch.Model.TableView(dir, dir.getName(), checkBox));
             }
 
-            module.setCellValueFactory(new PropertyValueFactory<>("path"));
+            module.setCellValueFactory(new PropertyValueFactory<>("fileName"));
             module.setStyle( "-fx-alignment: CENTER;");
             checkBox.setStyle( "-fx-alignment: CENTER;");
             checkBox.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
