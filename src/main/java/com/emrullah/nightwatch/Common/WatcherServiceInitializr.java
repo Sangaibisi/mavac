@@ -28,7 +28,11 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
 
     @Override
     public WatchService initializeWatchService(List<File> fileList) throws IOException {
-        return null;
+        WatchService watchService = FileSystems.getDefault().newWatchService();
+        for (File file : fileList) {
+            registerDir(Paths.get(file.getPath()), watchService);
+        }
+        return watchService;
     }
 
     @Override

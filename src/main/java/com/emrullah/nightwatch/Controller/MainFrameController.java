@@ -95,8 +95,8 @@ public class MainFrameController {
         } else if (getSelectedModuleList().isEmpty()) {
             for (TableViewItem item : moduleList) {
                 item.getCheckBox().setSelected(true);
-                nightWatcher = watcherServiceInitializr.initializeWatchService();
             }
+            nightWatcher = watcherServiceInitializr.initializeWatchService();
             commandLineArea.setText(commandLineArea.getText() + "\n All modules will be under watch!");
 
         } else {
