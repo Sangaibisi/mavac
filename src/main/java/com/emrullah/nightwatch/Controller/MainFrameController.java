@@ -13,6 +13,7 @@ import javafx.stage.DirectoryChooser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +45,6 @@ public class MainFrameController {
     WatchService nightWatcher = null;
     ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
 
-
     public void openPathDialog() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Open Resource File");
@@ -55,23 +55,8 @@ public class MainFrameController {
     }
 
     public void startWatching() {
-        writeIntro();
-        stopWatchingButton.setDisable(false);
-        registerList.setDisable(true);
-
-        if(getSelectedModuleList() == null){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("What am i supposed to do?");
-            alert.setContentText("This root folder is empty. Nothing to watch!");
-            alert.showAndWait();
-        }else if(getSelectedModuleList().isEmpty()){
-            for( TableViewItem item : moduleList){
-                item.getCheckBox().setSelected(true);
-            }
-            commandLineArea.setText(commandLineArea.getText()+"\n All modules will be under watch!");
-        }
         try {
-            nightWatcher = watcherServiceInitializr.initializeWatchService();
+            preWatchingOperations();
 
             totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
             watchButton.setDisable(false);
@@ -96,13 +81,42 @@ public class MainFrameController {
         }
     }
 
-    private ObservableList<TableViewItem> getSelectedModuleList(){
-        if(moduleList == null || moduleList.isEmpty()){
+    private void preWatchingOperations() throws IOException {
+        writeIntro();
+        stopWatchingButton.setDisable(false);
+        registerList.setDisable(true);
+
+        if (getSelectedModuleList() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("What am i supposed to do?");
+            alert.setContentText("This root folder is empty. Nothing to watch!");
+            alert.showAndWait();
+
+        } else if (getSelectedModuleList().isEmpty()) {
+            for (TableViewItem item : moduleList) {
+                item.getCheckBox().setSelected(true);
+                nightWatcher = watcherServiceInitializr.initializeWatchService();
+            }
+            commandLineArea.setText(commandLineArea.getText() + "\n All modules will be under watch!");
+
+        } else {
+            List<File> fileList = new ArrayList<>();
+            for (TableViewItem item : getSelectedModuleList()) {
+                if (item.getCheckBox().isSelected()) {
+                    fileList.add(item.getFile());
+                }
+            }
+            nightWatcher = watcherServiceInitializr.initializeWatchService(fileList);
+        }
+    }
+
+    private ObservableList<TableViewItem> getSelectedModuleList() {
+        if (moduleList == null || moduleList.isEmpty()) {
             return null;
         }
         ObservableList<TableViewItem> selectedModuleList = FXCollections.observableArrayList();
-        for(TableViewItem item : moduleList){
-            if(item.getCheckBox().isSelected()){
+        for (TableViewItem item : moduleList) {
+            if (item.getCheckBox().isSelected()) {
                 selectedModuleList.add(item);
             }
         }
@@ -123,8 +137,8 @@ public class MainFrameController {
             }
 
             module.setCellValueFactory(new PropertyValueFactory<>("fileName"));
-            module.setStyle( "-fx-alignment: CENTER;");
-            checkBox.setStyle( "-fx-alignment: CENTER;");
+            module.setStyle("-fx-alignment: CENTER;");
+            checkBox.setStyle("-fx-alignment: CENTER;");
             checkBox.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
 
             registerList.setItems(moduleList);
@@ -136,7 +150,7 @@ public class MainFrameController {
     }
 
     private void writeIntro() {
-        commandLineArea.setText(commandLineArea.getText()+FigletFont.convertOneLine("Welcome"));
-        commandLineArea.setText(commandLineArea.getText()+FigletFont.convertOneLine("NightWatch    is    begin"));
+        commandLineArea.setText(commandLineArea.getText() + FigletFont.convertOneLine("Welcome"));
+        commandLineArea.setText(commandLineArea.getText() + FigletFont.convertOneLine("NightWatch    is    begin"));
     }
 }

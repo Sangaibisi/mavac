@@ -27,6 +27,11 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
     }
 
     @Override
+    public WatchService initializeWatchService(List<File> fileList) throws IOException {
+        return null;
+    }
+
+    @Override
     public void startListening(WatchService watchService, TextArea commandLineArea) throws Exception {
         while (true) {
             WatchKey queuedKey = watchService.take();
