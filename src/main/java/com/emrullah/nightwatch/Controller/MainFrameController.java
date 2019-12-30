@@ -45,6 +45,8 @@ public class MainFrameController {
     WatchService nightWatcher = null;
     ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
 
+    private final static ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
     public void openPathDialog() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Open Resource File");
@@ -62,8 +64,8 @@ public class MainFrameController {
             watchButton.setDisable(false);
             compilerButton.setDisable(false);
             openPathButton.setDisable(true);
+            watchButton.setDisable(true);
 
-            ExecutorService executor = Executors.newFixedThreadPool(2);
             executor.execute(() -> {
                 try {
                     watcherServiceInitializr.startListening(nightWatcher, commandLineArea);
@@ -79,6 +81,40 @@ public class MainFrameController {
             System.out.println("System Error during listening folders");
             e.printStackTrace();
         }
+    }
+
+    public void startCompile() throws IOException {
+    }
+
+    public void stopWatching(){
+        try {
+            nightWatcher.close();
+            executor.shutdownNow();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("CRASH!");
+            alert.setContentText("The main thread is crashed. Please close application!");
+            alert.showAndWait();
+        } finally {
+            resetNighWatch();
+        }
+    }
+
+    private void resetNighWatch() {
+        watcherServiceInitializr = null;
+        nightWatcher = null;
+        moduleList = FXCollections.observableArrayList();
+        registerList.setItems(null);
+        commandLineArea.setText(null);
+        totalModules.setText("0");
+        totalWatches.setText("0");
+
+        registerList.setDisable(false);
+        openPathButton.setDisable(false);
+        compilerButton.setDisable(true);
+        watchButton.setDisable(true);
+        stopWatchingButton.setDisable(true);
     }
 
     private void preWatchingOperations() throws IOException {
@@ -97,13 +133,14 @@ public class MainFrameController {
                 item.getCheckBox().setSelected(true);
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService();
-            commandLineArea.setText(commandLineArea.getText() + "\n All modules will be under watch!");
+            commandLineArea.setText(commandLineArea.getText() + "\nAll modules are under watching!");
 
         } else {
             List<File> fileList = new ArrayList<>();
             for (TableViewItem item : getSelectedModuleList()) {
                 if (item.getCheckBox().isSelected()) {
                     fileList.add(item.getFile());
+                    commandLineArea.setText(commandLineArea.getText() + "\n"+ item.getFileName() +" is under watching..");
                 }
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService(fileList);
@@ -150,7 +187,6 @@ public class MainFrameController {
     }
 
     private void writeIntro() {
-        commandLineArea.setText(commandLineArea.getText() + FigletFont.convertOneLine("Welcome"));
-        commandLineArea.setText(commandLineArea.getText() + FigletFont.convertOneLine("NightWatch    is    begin"));
+        commandLineArea.setText(commandLineArea.getText() + "NightWatch was started to listening given path\n--------------------------------------------------------------------------------------------------------------");
     }
 }

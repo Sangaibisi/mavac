@@ -1,6 +1,7 @@
 package com.emrullah.nightwatch.Common;
 
 import com.emrullah.nightwatch.Base.IWatcherServiceInitializr;
+import com.emrullah.nightwatch.Controller.MainFrameController;
 import javafx.scene.control.TextArea;
 
 import java.io.File;

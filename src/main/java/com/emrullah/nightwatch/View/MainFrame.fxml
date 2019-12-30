@@ -56,7 +56,7 @@
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="768.0" minWidth="1024.0" prefHeight="784.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
       <children>
             <Button fx:id="watchButton" disable="true" layoutX="465.0" layoutY="22.0" mnemonicParsing="false" onAction="#startWatching" prefHeight="25.0" prefWidth="96.0" text="Start Watching" AnchorPane.leftAnchor="465.0" AnchorPane.topAnchor="22.0" />
-            <Button fx:id="compilerButton" disable="true" layoutX="572.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Compile" />
+            <Button fx:id="compilerButton" disable="true" layoutX="572.0" layoutY="22.0" mnemonicParsing="false" onAction="#startCompile" prefHeight="25.0" prefWidth="96.0" text="Compile" />
             <Button fx:id="openPathButton" layoutX="359.0" layoutY="22.0" mnemonicParsing="false" onAction="#openPathDialog" prefHeight="25.0" prefWidth="96.0" text="Open" AnchorPane.leftAnchor="359.0" AnchorPane.topAnchor="22.0" />
             <Label layoutX="493.0" layoutY="57.0" text="Total watches :" />
             <Label fx:id="totalWatches" layoutX="581.0" layoutY="57.0" text="0" />
@@ -64,8 +64,8 @@
             <Label layoutX="626.0" layoutY="57.0" text="File changes :" />
             <Label fx:id="totalModules" layoutX="448.0" layoutY="57.0" text="0" />
             <Label layoutX="359.0" layoutY="57.0" text="Total modules :" />
-            <TextArea fx:id="commandLineArea" editable="false" focusTraversable="false" layoutX="359.0" layoutY="76.0" mouseTransparent="true" prefHeight="672.0" prefWidth="660.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="359.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="76.0" />
-            <Button fx:id="stopWatchingButton" disable="true" layoutX="923.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Stop Watching" AnchorPane.bottomAnchor="721.0" AnchorPane.leftAnchor="923.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="22.0" />
+            <TextArea fx:id="commandLineArea" editable="false" layoutX="359.0" layoutY="76.0" mouseTransparent="true" prefHeight="672.0" prefWidth="660.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="359.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="76.0" />
+            <Button fx:id="stopWatchingButton" layoutX="923.0" layoutY="22.0" mnemonicParsing="false" onAction="#stopWatching" prefHeight="25.0" prefWidth="96.0" text="Reset" AnchorPane.bottomAnchor="721.0" AnchorPane.leftAnchor="923.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="22.0" />
             <TableView fx:id="registerList" layoutY="-1.0" prefHeight="727.0" prefWidth="336.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="688.0" AnchorPane.topAnchor="-1.0">
               <columns>
                 <TableColumn fx:id="module" prefWidth="265.0" resizable="false" text="Modules" />
