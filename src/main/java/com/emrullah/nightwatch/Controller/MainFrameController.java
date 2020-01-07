@@ -143,7 +143,7 @@ public class MainFrameController {
             for (TableViewItem item : getSelectedModuleList()) {
                 if (item.getCheckBox().isSelected()) {
                     fileList.add(item.getFile());
-                    commandLineArea.setText(commandLineArea.getText() + "\n" + item.getFileName() + " is under watching..");
+                    commandLineArea.setText(commandLineArea.getText() + "\n" + item.getFileName() + " is under watching");
                 }
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService(fileList);
