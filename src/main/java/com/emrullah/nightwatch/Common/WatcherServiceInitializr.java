@@ -42,20 +42,13 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
             WatchKey queuedKey = watchService.take();
             for (WatchEvent<?> watchEvent : queuedKey.pollEvents()) {
                 WatchEvent.Kind<?> kind = watchEvent.kind();
-                String output = watchEvent.kind().toString() + watchEvent.count() + watchEvent.context();
-                System.out.printf("\nEvent... kind=%s, count=%d, context=%s Context type=%s%n", watchEvent.kind(),
-                        watchEvent.count(), watchEvent.context(), ((Path) watchEvent.context()).getClass());
-                commandLineArea.setText(commandLineArea.getText() + "\n" + output);
 
-                if (ENTRY_CREATE.equals(kind)) {
+                if (ENTRY_MODIFY.equals(kind)) {
                     Path path = (Path) watchEvent.context();
-                    System.out.println(path.toAbsolutePath().toString());
-                } else if (ENTRY_MODIFY.equals(kind)) {
-                    Path path = (Path) watchEvent.context();
-                    System.out.println(path.toAbsolutePath().toString());
-                } else if (ENTRY_DELETE.equals(kind)) {
-                    Path path = (Path) watchEvent.context();
-                    System.out.println(path.toAbsolutePath().toString());
+                    Path parentPath = keyPathMap.get(queuedKey);
+                    path = parentPath.resolve(path);
+
+                    commandLineArea.setText(commandLineArea.getText() + "\n" + path.toAbsolutePath().toString() + " is "+ watchEvent.kind());
                 }
 
                 if (watchEvent.kind() == StandardWatchEventKinds.ENTRY_CREATE) {

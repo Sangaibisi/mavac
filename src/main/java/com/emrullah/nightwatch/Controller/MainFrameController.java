@@ -45,7 +45,7 @@ public class MainFrameController {
     WatchService nightWatcher = null;
     ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
 
-    private final static ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private ExecutorService executor;
 
     public void openPathDialog() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -65,7 +65,7 @@ public class MainFrameController {
             compilerButton.setDisable(false);
             openPathButton.setDisable(true);
             watchButton.setDisable(true);
-
+            executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
             executor.execute(() -> {
                 try {
                     watcherServiceInitializr.startListening(nightWatcher, commandLineArea);
@@ -86,7 +86,7 @@ public class MainFrameController {
     public void startCompile() throws IOException {
     }
 
-    public void stopWatching(){
+    public void stopWatching() {
         try {
             nightWatcher.close();
             executor.shutdownNow();
@@ -102,19 +102,22 @@ public class MainFrameController {
     }
 
     private void resetNighWatch() {
-        watcherServiceInitializr = null;
-        nightWatcher = null;
-        moduleList = FXCollections.observableArrayList();
-        registerList.setItems(null);
-        commandLineArea.setText(null);
-        totalModules.setText("0");
-        totalWatches.setText("0");
+        try {
+            nightWatcher = watcherServiceInitializr.initializeWatchService();
+            moduleList = FXCollections.observableArrayList();
+            registerList.setItems(null);
+            commandLineArea.setText(null);
+            totalModules.setText("0");
+            totalWatches.setText("0");
 
-        registerList.setDisable(false);
-        openPathButton.setDisable(false);
-        compilerButton.setDisable(true);
-        watchButton.setDisable(true);
-        stopWatchingButton.setDisable(true);
+            registerList.setDisable(false);
+            openPathButton.setDisable(false);
+            compilerButton.setDisable(true);
+            watchButton.setDisable(true);
+            stopWatchingButton.setDisable(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void preWatchingOperations() throws IOException {
@@ -140,7 +143,7 @@ public class MainFrameController {
             for (TableViewItem item : getSelectedModuleList()) {
                 if (item.getCheckBox().isSelected()) {
                     fileList.add(item.getFile());
-                    commandLineArea.setText(commandLineArea.getText() + "\n"+ item.getFileName() +" is under watching..");
+                    commandLineArea.setText(commandLineArea.getText() + "\n" + item.getFileName() + " is under watching..");
                 }
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService(fileList);
