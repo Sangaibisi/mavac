@@ -1,5 +1,6 @@
 package com.emrullah.nightwatch.Controller;
 
+import com.emrullah.nightwatch.Common.SmartModuleCompilerInitializr;
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
 import com.emrullah.nightwatch.Model.TableViewItem;
 import com.github.lalyos.jfiglet.FigletFont;
@@ -42,6 +43,7 @@ public class MainFrameController {
     public TableView registerList;
 
     WatcherServiceInitializr watcherServiceInitializr = null;
+    SmartModuleCompilerInitializr smci = null;
     WatchService nightWatcher = null;
     ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
 
@@ -136,6 +138,7 @@ public class MainFrameController {
                 item.getCheckBox().setSelected(true);
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService();
+            smci = new SmartModuleCompilerInitializr(watcherServiceInitializr.listOfModules());
             commandLineArea.setText(commandLineArea.getText() + "\nAll modules are under watching!");
 
         } else {
@@ -147,6 +150,7 @@ public class MainFrameController {
                 }
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService(fileList);
+            smci = new SmartModuleCompilerInitializr(fileList);
         }
     }
 
