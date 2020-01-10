@@ -86,7 +86,7 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
     }
 
     private void registerDir(Path path, WatchService watchService) throws IOException {
-        if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+        if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS) || path.toString().startsWith(".") || path.toString().contains("target")) {
             return;
         }
 

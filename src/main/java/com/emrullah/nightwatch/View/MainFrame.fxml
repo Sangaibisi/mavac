@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -72,6 +73,7 @@
                 <TableColumn fx:id="checkBox" minWidth="0.0" prefWidth="82.0" resizable="false" text="Observable" />
               </columns>
             </TableView>
+            <ProgressBar fx:id="progressBar" layoutX="433.0" layoutY="375.0" prefWidth="200.0" progress="0.0" />
       </children>
     </AnchorPane>
   </children>

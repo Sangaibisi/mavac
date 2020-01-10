@@ -6,6 +6,7 @@ import com.emrullah.nightwatch.Model.TableViewItem;
 import com.github.lalyos.jfiglet.FigletFont;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -41,11 +42,14 @@ public class MainFrameController {
     public TableColumn<TableViewItem, CheckBox> checkBox;
     @FXML
     public TableView registerList;
+    @FXML
+    public ProgressBar progressBar;
 
     WatcherServiceInitializr watcherServiceInitializr = null;
     SmartModuleCompilerInitializr smci = null;
     WatchService nightWatcher = null;
     ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
+    private Task copyWorker;
 
     private ExecutorService executor;
 
@@ -122,7 +126,30 @@ public class MainFrameController {
         }
     }
 
+    public Task createWorker() {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+                for (int i = 0; i < 10; i++) {
+                    Thread.sleep(50);
+                    updateMessage("2000 milliseconds");
+                    updateProgress(i + 1, 10);
+
+                    System.out.println(progressBar.getProgress());
+                }
+                return true;
+            }
+        };
+    }
+
     private void preWatchingOperations() throws IOException {
+        progressBar.setProgress(0);
+        copyWorker = createWorker();
+
+        progressBar.progressProperty().unbind();
+        progressBar.progressProperty().bind(copyWorker.progressProperty());
+
+        new Thread(copyWorker).start();
         writeIntro();
         stopWatchingButton.setDisable(false);
         registerList.setDisable(true);
