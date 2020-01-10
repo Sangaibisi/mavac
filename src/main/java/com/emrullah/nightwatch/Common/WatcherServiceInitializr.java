@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -15,6 +16,7 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
 
     private Map<WatchKey, Path> keyPathMap = new HashMap<WatchKey, Path>();
     private String path;
+    private List<File> selectedModules;
 
     public WatcherServiceInitializr(String _path) {
         this.path = _path;
@@ -23,6 +25,7 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
     @Override
     public WatchService initializeWatchService() throws IOException {
         WatchService watchService = FileSystems.getDefault().newWatchService();
+        selectedModules = listOfModules();
         registerDir(Paths.get(getPath()), watchService);
         return watchService;
     }
@@ -30,6 +33,7 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
     @Override
     public WatchService initializeWatchService(List<File> fileList) throws IOException {
         WatchService watchService = FileSystems.getDefault().newWatchService();
+        selectedModules = fileList;
         for (File file : fileList) {
             registerDir(Paths.get(file.getPath()), watchService);
         }
@@ -74,7 +78,11 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
     public List<File> listOfModules() {
         File root = new File(getPath());
         if(Arrays.asList(root.list()).isEmpty()) return null;
-        return Arrays.asList(Objects.requireNonNull(root.listFiles((current, name) -> new File(current, name).isDirectory())));
+        return Arrays.asList(Objects.requireNonNull(root.listFiles((current, name) -> new File(current, name)
+                .isDirectory())))
+                .stream()
+                .filter(p -> !p.getName().contains("."))
+                .collect(Collectors.toList());
     }
 
     private void registerDir(Path path, WatchService watchService) throws IOException {
