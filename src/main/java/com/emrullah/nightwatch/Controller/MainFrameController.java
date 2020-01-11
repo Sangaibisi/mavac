@@ -88,7 +88,16 @@ public class MainFrameController {
         }
     }
 
-    public void startCompile() throws IOException {
+    public void startCompile() {
+        try {
+            smci.decideWhichModulesWillBeDeploy();
+        } catch (UnsupportedOperationException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("What am i supposed to do?");
+            alert.setContentText("No changes detected. Nothing to deploy!");
+            alert.showAndWait();
+            e.printStackTrace();
+        }
     }
 
     public void stopWatching() {

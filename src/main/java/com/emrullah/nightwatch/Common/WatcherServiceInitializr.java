@@ -47,14 +47,11 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
             for (WatchEvent<?> watchEvent : queuedKey.pollEvents()) {
                 WatchEvent.Kind<?> kind = watchEvent.kind();
 
-
                 path = (Path) watchEvent.context();
                 parentPath = keyPathMap.get(queuedKey);
                 path = parentPath.resolve(path);
-
-                if(ready4Deployment.isEmpty() || !isThisPathIncludedForDeployment(path)){
-                    ready4Deployment.add(path);
-                }
+                
+                ready4Deployment.add(path);
 
                 if (ENTRY_MODIFY.equals(kind)) {
                     commandLineArea.setText(commandLineArea.getText() + "\n" + path.toAbsolutePath().toString() + " is "+ watchEvent.kind());
@@ -80,13 +77,6 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
                 .stream()
                 .filter(p -> !p.getName().contains("."))
                 .collect(Collectors.toList());
-    }
-
-    private boolean isThisPathIncludedForDeployment(Path path){
-        for(Path temp : ready4Deployment){
-            if(temp.toAbsolutePath().toString().contains(path.toString())) return true;
-        }
-        return false;
     }
 
     private void registerDir(Path path, WatchService watchService) throws IOException {
