@@ -10,12 +10,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
-public class SmartModuleCompilerInitializr implements ISmartModuleCompiler {
+public class SmartModuleCompiler implements ISmartModuleCompiler {
 
     private List<File> moduleList = null;
     private HashMap<File,Integer> moduleSizeList = new HashMap<>();
 
-    public SmartModuleCompilerInitializr(List _moduleList) throws IOException {
+    public SmartModuleCompiler(List _moduleList) throws IOException {
         if(_moduleList == null || _moduleList.isEmpty()) throw new IOException();
         this.moduleList=_moduleList;
         preOperations();

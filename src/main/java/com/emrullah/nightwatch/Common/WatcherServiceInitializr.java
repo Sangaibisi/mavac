@@ -31,7 +31,7 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
         copyworker=createWorker(fileList,watchService);
         progressDialog = new ProgressDialog(copyworker);
         progressDialog.setTitle("Processing");
-        progressDialog.setHeaderText("Watcher service is registiring to given path");
+        progressDialog.setHeaderText("Watcher service is registering to given path");
         new Thread(copyworker).start();
         selectedModules = fileList;
         return watchService;

@@ -1,13 +1,12 @@
 package com.emrullah.nightwatch.Controller;
 
 import com.emrullah.nightwatch.Base.ApplicationInitializer;
-import com.emrullah.nightwatch.Common.SmartModuleCompilerInitializr;
+import com.emrullah.nightwatch.Common.SmartModuleCompiler;
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
 import com.emrullah.nightwatch.Model.TableViewItem;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -46,7 +45,7 @@ public class MainFrameController {
     public TableView registerList;
 
     private WatcherServiceInitializr watcherServiceInitializr = null;
-    private SmartModuleCompilerInitializr smci = null;
+    private SmartModuleCompiler smci = null;
     private WatchService nightWatcher = null;
     private ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
     private ExecutorService executor;
@@ -136,7 +135,7 @@ public class MainFrameController {
                 item.getCheckBox().setSelected(true);
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService(WatcherServiceInitializr.listOfModules());
-            smci = new SmartModuleCompilerInitializr(watcherServiceInitializr.listOfModules());
+            smci = new SmartModuleCompiler(watcherServiceInitializr.listOfModules());
             commandLineArea.setText(commandLineArea.getText() + "\nAll modules are under watching!");
 
         } else {
@@ -148,7 +147,7 @@ public class MainFrameController {
                 }
             }
             nightWatcher = watcherServiceInitializr.initializeWatchService(fileList);
-            smci = new SmartModuleCompilerInitializr(fileList);
+            smci = new SmartModuleCompiler(fileList);
         }
     }
 
