@@ -21,6 +21,8 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
     private Task copyworker;
     private ProgressDialog progressDialog;
 
+    public static HashSet<Path> ready4Deployment = new HashSet<>();
+
     public WatcherServiceInitializr(String _path) {
         this.path = _path;
     }
@@ -39,24 +41,24 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
 
     @Override
     public void startListening(WatchService watchService, TextArea commandLineArea) throws Exception {
+        Path path,parentPath;
         while (true) {
             WatchKey queuedKey = watchService.take();
             for (WatchEvent<?> watchEvent : queuedKey.pollEvents()) {
                 WatchEvent.Kind<?> kind = watchEvent.kind();
 
-                if (ENTRY_MODIFY.equals(kind)) {
-                    Path path = (Path) watchEvent.context();
-                    Path parentPath = keyPathMap.get(queuedKey);
-                    path = parentPath.resolve(path);
 
+                path = (Path) watchEvent.context();
+                parentPath = keyPathMap.get(queuedKey);
+                path = parentPath.resolve(path);
+
+                if(ready4Deployment.isEmpty() || !isThisPathIncludedForDeployment(path)){
+                    ready4Deployment.add(path);
+                }
+
+                if (ENTRY_MODIFY.equals(kind)) {
                     commandLineArea.setText(commandLineArea.getText() + "\n" + path.toAbsolutePath().toString() + " is "+ watchEvent.kind());
                 }else if (watchEvent.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    // this is not a complete path
-                    Path path = (Path) watchEvent.context();
-                    // need to get parent path
-                    Path parentPath = keyPathMap.get(queuedKey);
-                    // get complete path
-                    path = parentPath.resolve(path);
                     commandLineArea.setText(commandLineArea.getText() + "\n" + path.toAbsolutePath().toString() + " is "+ watchEvent.kind());
                     registerDir(path, watchService);
                 }
@@ -78,6 +80,13 @@ public class WatcherServiceInitializr implements IWatcherServiceInitializr {
                 .stream()
                 .filter(p -> !p.getName().contains("."))
                 .collect(Collectors.toList());
+    }
+
+    private boolean isThisPathIncludedForDeployment(Path path){
+        for(Path temp : ready4Deployment){
+            if(temp.toAbsolutePath().toString().contains(path.toString())) return true;
+        }
+        return false;
     }
 
     private void registerDir(Path path, WatchService watchService) throws IOException {
