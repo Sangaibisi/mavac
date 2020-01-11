@@ -1,9 +1,10 @@
 package com.emrullah.nightwatch.Controller;
 
+import com.emrullah.nightwatch.Base.ApplicationInitializer;
 import com.emrullah.nightwatch.Common.SmartModuleCompilerInitializr;
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
 import com.emrullah.nightwatch.Model.TableViewItem;
-import com.github.lalyos.jfiglet.FigletFont;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -11,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,15 +44,11 @@ public class MainFrameController {
     public TableColumn<TableViewItem, CheckBox> checkBox;
     @FXML
     public TableView registerList;
-    @FXML
-    public ProgressBar progressBar;
 
-    WatcherServiceInitializr watcherServiceInitializr = null;
-    SmartModuleCompilerInitializr smci = null;
-    WatchService nightWatcher = null;
-    ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
-    private Task copyWorker;
-
+    private WatcherServiceInitializr watcherServiceInitializr = null;
+    private SmartModuleCompilerInitializr smci = null;
+    private WatchService nightWatcher = null;
+    private ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
     private ExecutorService executor;
 
     public void openPathDialog() {
@@ -66,7 +64,9 @@ public class MainFrameController {
         try {
             preWatchingOperations();
 
-            totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
+            Platform.runLater( () -> {
+                totalWatches.setText(String.valueOf(watcherServiceInitializr.getKeyPathMap().size()));
+            });
             watchButton.setDisable(false);
             compilerButton.setDisable(false);
             openPathButton.setDisable(true);
@@ -108,49 +108,20 @@ public class MainFrameController {
     }
 
     private void resetNighWatch() {
-        try {
-            nightWatcher = watcherServiceInitializr.initializeWatchService();
-            moduleList = FXCollections.observableArrayList();
-            registerList.setItems(null);
-            commandLineArea.setText(null);
-            totalModules.setText("0");
-            totalWatches.setText("0");
-
-            registerList.setDisable(false);
-            openPathButton.setDisable(false);
-            compilerButton.setDisable(true);
-            watchButton.setDisable(true);
-            stopWatchingButton.setDisable(true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Task createWorker() {
-        return new Task() {
-            @Override
-            protected Object call() throws Exception {
-                for (int i = 0; i < 10; i++) {
-                    Thread.sleep(50);
-                    updateMessage("2000 milliseconds");
-                    updateProgress(i + 1, 10);
-
-                    System.out.println(progressBar.getProgress());
-                }
-                return true;
+        Stage stage = (Stage) compilerButton.getScene().getWindow();
+        stage.close();
+        Platform.runLater( () -> {
+            try {
+                new ApplicationInitializer().start( new Stage() );
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        };
+        });
     }
 
     private void preWatchingOperations() throws IOException {
-        progressBar.setProgress(0);
-        copyWorker = createWorker();
-
-        progressBar.progressProperty().unbind();
-        progressBar.progressProperty().bind(copyWorker.progressProperty());
-
-        new Thread(copyWorker).start();
         writeIntro();
+
         stopWatchingButton.setDisable(false);
         registerList.setDisable(true);
 
@@ -164,7 +135,7 @@ public class MainFrameController {
             for (TableViewItem item : moduleList) {
                 item.getCheckBox().setSelected(true);
             }
-            nightWatcher = watcherServiceInitializr.initializeWatchService();
+            nightWatcher = watcherServiceInitializr.initializeWatchService(WatcherServiceInitializr.listOfModules());
             smci = new SmartModuleCompilerInitializr(watcherServiceInitializr.listOfModules());
             commandLineArea.setText(commandLineArea.getText() + "\nAll modules are under watching!");
 
