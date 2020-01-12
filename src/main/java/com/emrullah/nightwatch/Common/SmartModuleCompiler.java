@@ -15,7 +15,7 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     private List<File> moduleList = null;
     private HashMap<File,Long> sizeOfModulesBefore = new HashMap<>();
     private HashSet<Path> changedModules;
-    private List<File> ready4DeploymentList;
+    private List<Path> ready4DeploymentList;
 
     public SmartModuleCompiler(List _moduleList) throws IOException {
         if(_moduleList == null || _moduleList.isEmpty()) throw new IOException();
@@ -45,23 +45,28 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
         System.out.println("Total execution time : "+ (end - begin));
     }
 
-    public void decideWhichModulesWillBeDeploy() throws UnsupportedOperationException{
-        HashMap<File,Long> sizeOfModulesAfter = new HashMap<>();
-        for(File module : moduleList){
+    @Override
+    public void startDeployment(List<Path> deploymentList) {
+
+    }
+
+    public void decideWhichModulesWillBeDeploy() throws UnsupportedOperationException {
+        HashMap<File, Long> sizeOfModulesAfter = new HashMap<>();
+        for (File module : moduleList) {
             long fileSize = FileUtils.sizeOf(module);
-            sizeOfModulesAfter.put(module,fileSize);
+            sizeOfModulesAfter.put(module, fileSize);
             System.out.println("The size of " + module.getName() + " " + fileSize);
         }
 
         changedModules = WatcherServiceInitializr.ready4Deployment;
-        if(changedModules.isEmpty() && compareSizeOfModules(sizeOfModulesAfter).isEmpty()){
-            throw new UnsupportedOperationException();
-        }else if (!changedModules.isEmpty()){
-            List<File> changedSizeModuleList = compareSizeOfModules(sizeOfModulesAfter);
-            if(!changedSizeModuleList.isEmpty()){
-                ready4DeploymentList = findSetOfIntersection(changedModules,changedSizeModuleList);
+        List<File> changedSizeModuleList = compareSizeOfModules(sizeOfModulesAfter);
 
-            }
+        if (changedModules.isEmpty() && changedSizeModuleList.isEmpty()) {
+            throw new UnsupportedOperationException();
+        } else if (!changedModules.isEmpty() && !changedSizeModuleList.isEmpty()) {
+            ready4DeploymentList = findSetOfIntersection(changedModules, changedSizeModuleList);
+
+            startDeployment(ready4DeploymentList);
         }
     }
 
@@ -75,8 +80,14 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
         return changedModules;
     }
 
-    private List<File> findSetOfIntersection(HashSet<Path> sectionA, List<File> sectionB){
-        List<File> setOfIntersection = new ArrayList<>();
+    private List<Path> findSetOfIntersection(HashSet<Path> sectionA, List<File> sectionB){
+        List<Path> setOfIntersection = new ArrayList<>();
+        Iterator<Path> it = sectionA.iterator();
+        while(it.hasNext()){
+            Path temp = it.next();
+            int i = temp.compareTo(sectionB.get(0).toPath());
+            System.out.println(i);
+        }
 
         return setOfIntersection;
     }
