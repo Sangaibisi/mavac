@@ -5,10 +5,7 @@ import com.emrullah.nightwatch.Base.ISmartModuleCompiler;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,8 +13,9 @@ import org.apache.commons.io.FileUtils;
 public class SmartModuleCompiler implements ISmartModuleCompiler {
 
     private List<File> moduleList = null;
-    private HashMap<File,Long> sizeOfModulesBefore;
-    HashSet<Path> changedModules;
+    private HashMap<File,Long> sizeOfModulesBefore = new HashMap<>();
+    private HashSet<Path> changedModules;
+    private List<File> ready4DeploymentList;
 
     public SmartModuleCompiler(List _moduleList) throws IOException {
         if(_moduleList == null || _moduleList.isEmpty()) throw new IOException();
@@ -56,22 +54,31 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
         }
 
         changedModules = WatcherServiceInitializr.ready4Deployment;
-        if(changedModules.isEmpty() && compareSizeOfModules(sizeOfModulesAfter)){
+        if(changedModules.isEmpty() && compareSizeOfModules(sizeOfModulesAfter).isEmpty()){
             throw new UnsupportedOperationException();
         }else if (!changedModules.isEmpty()){
-            Iterator<Path> it = changedModules.iterator();
-            if(it.hasNext()){
+            List<File> changedSizeModuleList = compareSizeOfModules(sizeOfModulesAfter);
+            if(!changedSizeModuleList.isEmpty()){
+                ready4DeploymentList = findSetOfIntersection(changedModules,changedSizeModuleList);
+
             }
         }
     }
 
-    private boolean compareSizeOfModules(HashMap<File,Long> sizeOfModulesAfter){
+    private List<File> compareSizeOfModules(HashMap<File,Long> sizeOfModulesAfter){
+        List<File> changedModules = new ArrayList<>();
         for(HashMap.Entry<File,Long> theModule : sizeOfModulesAfter.entrySet()){
-            if(!sizeOfModulesBefore.get(theModule.getKey()).equals(sizeOfModulesBefore.get(theModule.getKey()))){
-                return false;
+            if(!sizeOfModulesBefore.get(theModule.getKey()).equals(theModule.getValue())){
+                changedModules.add(theModule.getKey());
             }
         }
-        return true;
+        return changedModules;
+    }
+
+    private List<File> findSetOfIntersection(HashSet<Path> sectionA, List<File> sectionB){
+        List<File> setOfIntersection = new ArrayList<>();
+
+        return setOfIntersection;
     }
 
 }
