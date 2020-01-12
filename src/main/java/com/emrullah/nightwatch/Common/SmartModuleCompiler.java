@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 public class SmartModuleCompiler implements ISmartModuleCompiler {
@@ -15,7 +16,7 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     private List<File> moduleList = null;
     private HashMap<File,Long> sizeOfModulesBefore = new HashMap<>();
     private HashSet<Path> changedModules;
-    private List<Path> ready4DeploymentList;
+    private List<String> ready4DeploymentList;
 
     public SmartModuleCompiler(List _moduleList) throws IOException {
         if(_moduleList == null || _moduleList.isEmpty()) throw new IOException();
@@ -46,7 +47,7 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     }
 
     @Override
-    public void startDeployment(List<Path> deploymentList) {
+    public void startDeployment(List<String> deploymentList) {
 
     }
 
@@ -80,13 +81,38 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
         return changedModules;
     }
 
-    private List<Path> findSetOfIntersection(HashSet<Path> sectionA, List<File> sectionB){
-        List<Path> setOfIntersection = new ArrayList<>();
-        Iterator<Path> it = sectionA.iterator();
-        while(it.hasNext()){
-            Path temp = it.next();
-            int i = temp.compareTo(sectionB.get(0).toPath());
-            System.out.println(i);
+    private List<String> findSetOfIntersection(HashSet<Path> sectionA, List<File> sectionB){
+        List<String> setOfIntersection = new ArrayList<>();
+        List<Path> temp;
+
+        for (File theModule : sectionB) {
+            temp = sectionA.stream().filter(p -> p.toString().contains(theModule.getName())).collect(Collectors.toList());
+            if(!temp.isEmpty()){
+                List<List<String>> levels = new ArrayList<>();
+                for(int i = 0; i<temp.size(); i++){
+                    levels.add(Arrays.asList(temp.get(i).toString().split("\\\\")));
+                }
+
+                int i = levels.get(0).indexOf(theModule.getName());
+
+                String nextLevel = levels.get(0).get(++i);
+                for (int j = 1; j < levels.size(); j++) {
+                    if (!levels.get(j).contains(nextLevel)){
+                        break;
+                    }
+                    nextLevel = levels.get(j).get(i++);
+                }
+
+                i = levels.get(0).indexOf(nextLevel);
+
+                StringBuilder sb = new StringBuilder();
+                for(int t = 0; t<i; t++){
+                    sb.append(levels.get(0).get(t)).append("\\");
+                }
+                sb.delete(sb.toString().length()-2,sb.toString().length());
+
+                setOfIntersection.add(sb.toString());
+            }
         }
 
         return setOfIntersection;

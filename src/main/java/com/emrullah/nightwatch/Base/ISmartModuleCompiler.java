@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ISmartModuleCompiler {
     void preOperations();
-    void startDeployment(List<Path> deploymentList);
+    void startDeployment(List<String> deploymentList);
 }
