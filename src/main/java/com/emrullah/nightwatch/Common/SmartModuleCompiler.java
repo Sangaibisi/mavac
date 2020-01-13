@@ -84,38 +84,46 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     private List<String> findSetOfIntersection(HashSet<Path> sectionA, List<File> sectionB){
         List<String> setOfIntersection = new ArrayList<>();
         List<Path> temp;
+        List<String> paths = new ArrayList<>();
 
         for (File theModule : sectionB) {
             temp = sectionA.stream().filter(p -> p.toString().contains(theModule.getName())).collect(Collectors.toList());
             if(!temp.isEmpty()){
-                List<List<String>> levels = new ArrayList<>();
-                for(int i = 0; i<temp.size(); i++){
-                    levels.add(Arrays.asList(temp.get(i).toString().split("\\\\")));
+                for(Path thePath : temp){
+                    paths.add(thePath.toAbsolutePath().toString());
                 }
-
-                int i = levels.get(0).indexOf(theModule.getName());
-
-                String nextLevel = levels.get(0).get(++i);
-                for (int j = 1; j < levels.size(); j++) {
-                    if (!levels.get(j).contains(nextLevel)){
-                        break;
-                    }
-                    nextLevel = levels.get(j).get(i++);
-                }
-
-                i = levels.get(0).indexOf(nextLevel);
-
-                StringBuilder sb = new StringBuilder();
-                for(int t = 0; t<i; t++){
-                    sb.append(levels.get(0).get(t)).append("\\");
-                }
-                sb.delete(sb.toString().length()-2,sb.toString().length());
-
-                setOfIntersection.add(sb.toString());
+                setOfIntersection.add(commonPath(Arrays.copyOf(paths.toArray(),paths.size(),String[].class)));
+                paths.clear();
             }
         }
 
         return setOfIntersection;
+    }
+
+    private String commonPath(String[] paths){
+        String commonPath = "";
+        String[][] folders = new String[paths.length][];
+        for(int i = 0; i < paths.length; i++){
+            folders[i] = paths[i].split("\\\\"); //split on file separator
+        }
+        for(int j = 0; j < folders[0].length; j++){
+            String thisFolder = folders[0][j]; //grab the next folder name in the first path
+            boolean allMatched = true; //assume all have matched in case there are no more paths
+            for(int i = 1; i < folders.length && allMatched; i++){ //look at the other paths
+                if(folders[i].length < j){ //if there is no folder here
+                    allMatched = false; //no match
+                    break; //stop looking because we've gone as far as we can
+                }
+                //otherwise
+                allMatched &= folders[i][j].equals(thisFolder); //check if it matched
+            }
+            if(allMatched){ //if they all matched this folder name
+                commonPath += thisFolder + "/"; //add it to the answer
+            }else{//otherwise
+                break;//stop looking
+            }
+        }
+        return commonPath;
     }
 
 }
