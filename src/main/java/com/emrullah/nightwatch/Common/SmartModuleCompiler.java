@@ -2,21 +2,26 @@ package com.emrullah.nightwatch.Common;
 
 import com.emrullah.nightwatch.Base.ISmartModuleCompiler;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import com.emrullah.nightwatch.Controller.MainFrameController;
 import org.apache.commons.io.FileUtils;
 public class SmartModuleCompiler implements ISmartModuleCompiler {
 
     private List<File> moduleList = null;
     private HashMap<File,Long> sizeOfModulesBefore = new HashMap<>();
     private HashSet<Path> changedModules;
-    private List<String> ready4DeploymentList;
+    private List<String> readyForDeploy;
+
+    private HashSet<String> hashedPaths = new HashSet<>();
 
     public SmartModuleCompiler(List _moduleList) throws IOException {
         if(_moduleList == null || _moduleList.isEmpty()) throw new IOException();
@@ -47,28 +52,53 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     }
 
     @Override
-    public void startDeployment(List<String> deploymentList) {
+    public void startDeployment(HashSet<String> deploymentList) {
+        try {
+            for (String path : deploymentList) {
+                String temp = "cd "+ path + " && mvn clean install -Dmaven.test.skip";
+                ProcessBuilder builder = new ProcessBuilder(
+                        "cmd.exe", "/c", temp);
+                builder.redirectErrorStream(true);
+                Process p = null;
+                p = builder.start();
 
+                BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while (true) {
+                    line = r.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    System.out.println(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void decideWhichModulesWillBeDeploy() throws UnsupportedOperationException {
-        HashMap<File, Long> sizeOfModulesAfter = new HashMap<>();
-        for (File module : moduleList) {
-            long fileSize = FileUtils.sizeOf(module);
-            sizeOfModulesAfter.put(module, fileSize);
-            System.out.println("The size of " + module.getName() + " " + fileSize);
+    public void startDeploymentProcess() throws UnsupportedOperationException {
+        HashSet<Path> changedPaths = WatcherServiceInitializr.ready4Deployment;
+        List<File> changedFiles = new ArrayList<>();
+        for (Path thePath : changedPaths){
+            changedFiles.add(new File(thePath.toString()));
+        }
+        for(File file : changedFiles){
+            if(!file.isDirectory()) continue;
+            String temp = findPOMPath(file);
+            if(temp != null) hashedPaths.add(temp);
         }
 
-        changedModules = WatcherServiceInitializr.ready4Deployment;
-        List<File> changedSizeModuleList = compareSizeOfModules(sizeOfModulesAfter);
+        startDeployment(hashedPaths);
+    }
 
-        if (changedModules.isEmpty() && changedSizeModuleList.isEmpty()) {
-            throw new UnsupportedOperationException();
-        } else if (!changedModules.isEmpty() && !changedSizeModuleList.isEmpty()) {
-            ready4DeploymentList = findSetOfIntersection(changedModules, changedSizeModuleList);
-
-            startDeployment(ready4DeploymentList);
+    private String findPOMPath(File file){
+        String path = file.getPath();
+        if(!Arrays.asList(file.listFiles()).stream().filter(p->p.getName().contains("pom.xml")).collect(Collectors.toList()).isEmpty()){
+            return path;
         }
+
+        return findPOMPath(new File(file.getParent()));
     }
 
     private List<File> compareSizeOfModules(HashMap<File,Long> sizeOfModulesAfter){

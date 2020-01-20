@@ -90,7 +90,7 @@ public class MainFrameController {
 
     public void startCompile() {
         try {
-            smci.decideWhichModulesWillBeDeploy();
+            smci.startDeploymentProcess();
         } catch (UnsupportedOperationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("What am i supposed to do?");
