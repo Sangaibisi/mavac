@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.emrullah.nightwatch.Controller.MainFrameController;
+import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import org.apache.commons.io.FileUtils;
 public class SmartModuleCompiler implements ISmartModuleCompiler {
@@ -55,27 +56,35 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     @Override
     public void startDeployment(HashSet<String> deploymentList, TextArea commandLineArea) {
         for (String path : deploymentList) {
-            try {
-                String maven = "C:\\apache-maven-3.0.5\\bin\\mvn";
-                Process process = Runtime.getRuntime().exec(
-                        "cmd.exe /c "
-                                + maven
-                                + " "
-                                + "clean install -Dmaven.test.skip"
-                                + " -f "
-                                + path
-                                + "\\pom.xml");
-                BufferedReader reader =
-                        new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String buffer = reader.readLine();
-                while (buffer != null) {
-                    buffer = reader.readLine();
-                    System.out.println(buffer);
-                    commandLineArea.setText(commandLineArea.getText() + buffer);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Thread executor =
+                    new Thread(
+                            () -> {
+                                String maven = "C:\\apache-maven-3.0.5\\bin\\mvn";
+                                Process process = null;
+                                try {
+                                    process = Runtime.getRuntime().exec(
+                                            "cmd.exe /c "
+                                                    + maven
+                                                    + " "
+                                                    + "clean install -Dmaven.test.skip"
+                                                    + " -f "
+                                                    + path
+                                                    + "\\pom.xml");
+                                    BufferedReader reader =
+                                            new BufferedReader(new InputStreamReader(process.getInputStream()));
+                                    String buffer = reader.readLine();
+                                    while (buffer != null) {
+                                        buffer = reader.readLine();
+                                        System.out.println(buffer);
+                                        commandLineArea.appendText(buffer);
+                                        commandLineArea.appendText("\n");
+                                    }
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+            executor.start();
         }
     }
 

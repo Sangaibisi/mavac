@@ -90,8 +90,10 @@ public class MainFrameController {
 
     public void startCompile() {
         try {
+            nightWatcher.close();
+            executor.shutdownNow();
             smci.startDeploymentProcess(commandLineArea);
-        } catch (UnsupportedOperationException e) {
+        } catch (UnsupportedOperationException | IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("What am i supposed to do?");
             alert.setContentText("No changes detected. Nothing to deploy!");
