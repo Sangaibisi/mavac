@@ -92,7 +92,7 @@ public class MainFrameController {
         try {
             nightWatcher.close();
             executor.shutdownNow();
-            smci.startDeploymentProcess(commandLineArea);
+            smci.preDeploymentProcess();
         } catch (UnsupportedOperationException | IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("What am i supposed to do?");

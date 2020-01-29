@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 
 public interface ISmartModuleCompiler {
+
     void preOperations();
-    void startDeployment(HashSet<String> deploymentList, TextArea commandLineArea);
+    void preDeploymentProcess() throws UnsupportedOperationException;
+
+    void startDeployment(HashSet<String> deploymentList);
 }

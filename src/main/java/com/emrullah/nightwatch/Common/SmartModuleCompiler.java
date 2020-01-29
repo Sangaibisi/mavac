@@ -54,8 +54,27 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
     }
 
     @Override
-    public void startDeployment(HashSet<String> deploymentList, TextArea commandLineArea) {
-        for (String path : deploymentList) {
+    public void preDeploymentProcess() throws UnsupportedOperationException {
+        HashSet<Path> changedPaths = WatcherServiceInitializr.ready4Deployment;
+        List<File> changedFiles = new ArrayList<>();
+        for (Path thePath : changedPaths){
+            changedFiles.add(new File(thePath.toString()));
+        }
+        for(File file : changedFiles){
+            if(!file.isDirectory()) continue;
+            String temp = findPOMPath(file);
+            if(temp != null) hashedPaths.add(temp);
+        }
+
+        startDeployment(hashedPaths);
+    }
+
+    @Override
+    public void startDeployment(HashSet<String> deploymentList) {
+
+    }
+
+    private void goThreadForDeploy(String path){
             Thread executor =
                     new Thread(
                             () -> {
@@ -76,8 +95,6 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
                                     while (buffer != null) {
                                         buffer = reader.readLine();
                                         System.out.println(buffer);
-                                        commandLineArea.appendText(buffer);
-                                        commandLineArea.appendText("\n");
                                     }
 
                                 } catch (IOException e) {
@@ -85,22 +102,6 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
                                 }
                             });
             executor.start();
-        }
-    }
-
-    public void startDeploymentProcess(TextArea commandLineArea) throws UnsupportedOperationException {
-        HashSet<Path> changedPaths = WatcherServiceInitializr.ready4Deployment;
-        List<File> changedFiles = new ArrayList<>();
-        for (Path thePath : changedPaths){
-            changedFiles.add(new File(thePath.toString()));
-        }
-        for(File file : changedFiles){
-            if(!file.isDirectory()) continue;
-            String temp = findPOMPath(file);
-            if(temp != null) hashedPaths.add(temp);
-        }
-
-        startDeployment(hashedPaths,commandLineArea);
     }
 
     private String findPOMPath(File file){
@@ -110,6 +111,32 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
         }
 
         return findPOMPath(new File(file.getParent()));
+    }
+
+    /*private String commonPath(String[] paths){
+        String commonPath = "";
+        String[][] folders = new String[paths.length][];
+        for(int i = 0; i < paths.length; i++){
+            folders[i] = paths[i].split("\\\\"); //split on file separator
+        }
+        for(int j = 0; j < folders[0].length; j++){
+            String thisFolder = folders[0][j]; //grab the next folder name in the first path
+            boolean allMatched = true; //assume all have matched in case there are no more paths
+            for(int i = 1; i < folders.length && allMatched; i++){ //look at the other paths
+                if(folders[i].length < j){ //if there is no folder here
+                    allMatched = false; //no match
+                    break; //stop looking because we've gone as far as we can
+                }
+                //otherwise
+                allMatched &= folders[i][j].equals(thisFolder); //check if it matched
+            }
+            if(allMatched){ //if they all matched this folder name
+                commonPath += thisFolder + "/"; //add it to the answer
+            }else{//otherwise
+                break;//stop looking
+            }
+        }
+        return commonPath;
     }
 
     private List<File> compareSizeOfModules(HashMap<File,Long> sizeOfModulesAfter){
@@ -139,32 +166,6 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
         }
 
         return setOfIntersection;
-    }
-
-    private String commonPath(String[] paths){
-        String commonPath = "";
-        String[][] folders = new String[paths.length][];
-        for(int i = 0; i < paths.length; i++){
-            folders[i] = paths[i].split("\\\\"); //split on file separator
-        }
-        for(int j = 0; j < folders[0].length; j++){
-            String thisFolder = folders[0][j]; //grab the next folder name in the first path
-            boolean allMatched = true; //assume all have matched in case there are no more paths
-            for(int i = 1; i < folders.length && allMatched; i++){ //look at the other paths
-                if(folders[i].length < j){ //if there is no folder here
-                    allMatched = false; //no match
-                    break; //stop looking because we've gone as far as we can
-                }
-                //otherwise
-                allMatched &= folders[i][j].equals(thisFolder); //check if it matched
-            }
-            if(allMatched){ //if they all matched this folder name
-                commonPath += thisFolder + "/"; //add it to the answer
-            }else{//otherwise
-                break;//stop looking
-            }
-        }
-        return commonPath;
-    }
+    }*/
 
 }
