@@ -5,7 +5,7 @@ public final class GeneralEnumerationDefinitions {
     public enum PriorityModules{
         BASE(1),
         COMMON(2),
-        ESB(3),
+        ESB(2),
         OTHER(9);
 
         private int priority;

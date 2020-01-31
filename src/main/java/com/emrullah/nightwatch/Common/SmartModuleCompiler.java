@@ -66,7 +66,8 @@ public class SmartModuleCompiler implements ISmartModuleCompiler {
             if(temp != null) hashedPaths.add(temp);
         }
 
-        startDeployment(hashedPaths);
+        if(!hashedPaths.isEmpty()) startDeployment(hashedPaths);
+        else throw new UnsupportedOperationException();
     }
 
     @Override

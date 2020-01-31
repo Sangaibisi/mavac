@@ -9,6 +9,7 @@ import java.util.List;
 public interface ISmartModuleCompiler {
 
     void preOperations();
+
     void preDeploymentProcess() throws UnsupportedOperationException;
 
     void startDeployment(HashSet<String> deploymentList);

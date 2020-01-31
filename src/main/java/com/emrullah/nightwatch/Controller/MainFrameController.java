@@ -90,9 +90,9 @@ public class MainFrameController {
 
     public void startCompile() {
         try {
+            smci.preDeploymentProcess();
             nightWatcher.close();
             executor.shutdownNow();
-            smci.preDeploymentProcess();
         } catch (UnsupportedOperationException | IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("What am i supposed to do?");
