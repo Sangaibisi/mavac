@@ -1,8 +1,10 @@
 package com.emrullah.nightwatch.Controller;
 
 import com.emrullah.nightwatch.Base.ApplicationInitializer;
+import com.emrullah.nightwatch.Common.GeneralEnumerationDefinitions;
 import com.emrullah.nightwatch.Common.SmartModuleCompiler;
 import com.emrullah.nightwatch.Common.WatcherServiceInitializr;
+import com.emrullah.nightwatch.Model.ModulePOJO;
 import com.emrullah.nightwatch.Model.TableViewItem;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -49,6 +51,7 @@ public class MainFrameController {
     private WatchService nightWatcher = null;
     private ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
     private ExecutorService executor;
+    private List<ModulePOJO> projectModule;
 
     public void openPathDialog() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -183,9 +186,20 @@ public class MainFrameController {
             alert.setContentText("This root folder is empty. Nothing to watch!");
             alert.showAndWait();
         } else {
+            projectModule = new ArrayList<>();
             for (File dir : listOfModules) {
                 CheckBox checkBox = new CheckBox();
                 moduleList.add(new TableViewItem(dir, dir.getName(), checkBox));
+
+                if(dir.getName().equals(GeneralEnumerationDefinitions.PriorityModules.BASE.toString())){
+                    projectModule.add(new ModulePOJO(dir.getName(),dir,GeneralEnumerationDefinitions.PriorityModules.BASE));
+                }else if(dir.getName().equals(GeneralEnumerationDefinitions.PriorityModules.COMMON.toString())){
+                    projectModule.add(new ModulePOJO(dir.getName(),dir,GeneralEnumerationDefinitions.PriorityModules.COMMON));
+                }else if(dir.getName().equals(GeneralEnumerationDefinitions.PriorityModules.ESB.toString())){
+                    projectModule.add(new ModulePOJO(dir.getName(),dir,GeneralEnumerationDefinitions.PriorityModules.ESB));
+                }else{
+                    projectModule.add(new ModulePOJO(dir.getName(),dir,GeneralEnumerationDefinitions.PriorityModules.OTHER));
+                }
             }
 
             module.setCellValueFactory(new PropertyValueFactory<>("fileName"));
