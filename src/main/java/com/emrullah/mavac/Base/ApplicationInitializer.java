@@ -26,20 +26,16 @@ public class ApplicationInitializer extends Application {
 
     private static Logger logger;
     private Stage primaryStage;
-    private BorderPane mainWindowLayout;
 
     public static void main(String[] args) {
         logger = LogManager.getContext().getLogger(ApplicationInitializer.class.getName());
         logger.debug("------------------------------");
         logger.debug("Application starting");
-        logger.error("asdasd");
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-
-
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("NightWatcher Service");
         this.primaryStage.setResizable(false);
@@ -58,9 +54,6 @@ public class ApplicationInitializer extends Application {
             controller.setMainApp(this);
 
             this.primaryStage.setScene(new Scene(root, 1024, 768));
-
-
-
             primaryStage.show();
 
         } catch (IOException e) {
