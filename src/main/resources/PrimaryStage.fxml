@@ -2,13 +2,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -57,17 +57,16 @@
         </MenuBar>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="768.0" minWidth="1024.0" prefHeight="784.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
             <children>
-                <Button fx:id="watchButton" disable="true" layoutX="465.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Start Watching" AnchorPane.leftAnchor="465.0" AnchorPane.topAnchor="22.0" />
-                <Button fx:id="compilerButton" disable="true" layoutX="572.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Compile" />
-                <Button fx:id="openPathButton" layoutX="359.0" layoutY="22.0" mnemonicParsing="false" onAction="#actionOpenPath" prefHeight="25.0" prefWidth="96.0" text="Open" AnchorPane.leftAnchor="359.0" AnchorPane.topAnchor="22.0" />
+                <Button fx:id="synchronisationButton" disable="true" layoutX="471.0" layoutY="22.0" mnemonicParsing="false" onAction="#actionSynchronisation" prefHeight="25.0" prefWidth="102.0" text="Synchronisation" AnchorPane.leftAnchor="471.0" AnchorPane.topAnchor="22.0" />
+                <Button fx:id="compilerButton" disable="true" layoutX="587.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Compile" />
+                <Button fx:id="openPathButton" layoutX="356.0" layoutY="22.0" mnemonicParsing="false" onAction="#actionOpenPath" prefHeight="25.0" prefWidth="102.0" text="Open" AnchorPane.leftAnchor="356.0" AnchorPane.topAnchor="22.0" />
                 <Label layoutX="697.0" layoutY="46.0" text="Total watches :" />
                 <Label fx:id="totalWatches" layoutX="790.0" layoutY="46.0" text="0" />
                 <Label layoutX="789.0" layoutY="79.0" text="0" />
                 <Label layoutX="697.0" layoutY="79.0" text="File changes :" />
                 <Label fx:id="totalModules" layoutX="790.0" layoutY="14.0" text="0" />
                 <Label layoutX="697.0" layoutY="14.0" text="Total modules :" />
-                <TextArea fx:id="commandLineArea" editable="false" layoutX="359.0" layoutY="101.0" mouseTransparent="true" prefHeight="647.0" prefWidth="660.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="359.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="101.0" />
-                <Button fx:id="stopWatchingButton" layoutX="359.0" layoutY="72.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Reset" AnchorPane.bottomAnchor="671.0" AnchorPane.leftAnchor="359.0" AnchorPane.rightAnchor="569.0" AnchorPane.topAnchor="72.0" />
+                <Button fx:id="stopWatchingButton" layoutX="355.0" layoutY="67.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Reset" AnchorPane.bottomAnchor="676.0" AnchorPane.leftAnchor="355.0" AnchorPane.rightAnchor="567.0" AnchorPane.topAnchor="67.0" />
                 <TableView fx:id="registerList" layoutY="-1.0" prefHeight="727.0" prefWidth="336.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="688.0" AnchorPane.topAnchor="-1.0">
                     <columns>
                         <TableColumn fx:id="module" prefWidth="265.0" resizable="false" text="Modules" />
@@ -79,6 +78,7 @@
                   <Image url="@sync_processing.gif" />
                </image>
             </ImageView>
+            <ListView fx:id="commandLineArea" layoutX="355.0" layoutY="96.0" prefHeight="652.0" prefWidth="660.0" />
             </children>
         </AnchorPane>
     </children>

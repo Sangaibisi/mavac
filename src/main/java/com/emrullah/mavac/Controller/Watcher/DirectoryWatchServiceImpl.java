@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
+public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnable {
 
     private static Logger logger;
 
@@ -37,7 +37,7 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
      *
      * @throws IOException If an I/O error occurs.
      */
-    public DirectoryWatchService(ListView<String> listView) throws IOException {
+    public DirectoryWatchServiceImpl(ListView<String> listView) throws IOException {
         this.listView = listView;
 
         mWatchService = FileSystems.getDefault().newWatchService();
@@ -198,7 +198,7 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
     @Override
     public void start() {
         if (mIsRunning.compareAndSet(false, true)) {
-            Thread runnerThread = new Thread(this, DirectoryWatchService.class.getSimpleName());
+            Thread runnerThread = new Thread(this, DirectoryWatchServiceImpl.class.getSimpleName());
             runnerThread.start();
         }
     }
@@ -218,7 +218,7 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
             try {
                 key = mWatchService.take();
             } catch (InterruptedException e) {
-                logger.error(getThreadName() + " | " + DirectoryWatchService.class.getSimpleName() + " service interrupted.");
+                logger.error(getThreadName() + " | " + DirectoryWatchServiceImpl.class.getSimpleName() + " service interrupted.");
                 break;
             }
 
