@@ -150,7 +150,6 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
             throw new IllegalArgumentException(path + " is not a directory.");
         }
 
-
         try {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 
@@ -158,8 +157,6 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
                 public FileVisitResult preVisitDirectory(Path subPath, BasicFileAttributes attrs) throws IOException {
                     if (isSuitablePathToWatch(subPath)) {
                         subDirCount++;
-
-                        // System.out.println("counter : " + subDirCount + " | dir : " + subPath);
 
                         if (!mDirPathToListenersMap.containsKey(subPath)) {
                             // May throw

@@ -1,6 +1,7 @@
 package com.emrullah.mavac.Controller;
 
 import com.emrullah.mavac.Base.ApplicationInitializer;
+import com.emrullah.mavac.Controller.Compiler.ModuleCompilerImpl;
 import com.emrullah.mavac.Controller.Watcher.DirectoryWatchServiceImpl;
 import com.emrullah.mavac.Model.Module;
 import com.emrullah.mavac.Model.Project;
@@ -42,6 +43,7 @@ public class PrimaryStageController {
     private static Logger logger;
 
     private DirectoryWatchServiceImpl directoryWatchService;
+    private ModuleCompilerImpl moduleCompiler;
     private ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
     private ApplicationInitializer mainApp;
     private Project theProject;
@@ -56,13 +58,12 @@ public class PrimaryStageController {
         String thePath = MavacUtility.getDirectoryPathWithChooser(mainApp);
         theProject = new Project(new File(thePath));
         addItemsToTableView();
-
     }
 
     @FXML
     private void actionSynchronisation() {
         Path path = FileSystems.getDefault().getPath(theProject.getFile().getPath());
-
+        processImage.setVisible(true);
         try {
             directoryWatchService = new DirectoryWatchServiceImpl(commandLineArea);
             directoryWatchService.register(
@@ -71,23 +72,18 @@ public class PrimaryStageController {
                         public void onFileCreate(Path filePath) {
                             logger.debug("File Create Event | " + filePath);
                             if(!filePath.toString().endsWith(".watchsrvc"))
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        commandLineArea.getItems().add("\nNew file created at " + filePath.toAbsolutePath().toString());
-                                    }
+                                Platform.runLater(() -> {
+                                    theProject.getChangedCompileList().add(filePath);
+                                    commandLineArea.getItems().add("\nNew file created at " + filePath.toAbsolutePath().toString());
                                 });
                         }
 
                         @Override
                         public void onFileModify(Path filePath) {
                             logger.debug("File Modify Event | " + filePath);
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    commandLineArea.getItems().add("\nFile modify event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
-
-                                }
+                            Platform.runLater(() -> {
+                                theProject.getChangedCompileList().add(filePath);
+                                commandLineArea.getItems().add("\nFile modify event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
                             });
                         }
 
@@ -95,26 +91,37 @@ public class PrimaryStageController {
                         public void onFileDelete(Path filePath) {
                             logger.debug("File Delete Event | " + filePath);
                             if(!filePath.toString().endsWith(".watchsrvc"))
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        commandLineArea.getItems().add("\nFile delete event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
-
-                                    }
+                                Platform.runLater(() -> {
+                                    theProject.getChangedCompileList().add(filePath);
+                                    commandLineArea.getItems().add("\nFile delete event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
                                 });
                         }
                     },
                     path);
 
             directoryWatchService.start();
+
             compilerButton.setDisable(false);
             synchronisationButton.setDisable(true);
             totalWatches.setText(String.valueOf(directoryWatchService.getSubDirCount()));
-            processImage.setVisible(true);
-
 
         } catch (IOException e) {
             logger.error("Unable to register file change listener for " + theProject.getFile().getName());
+        }
+    }
+
+    @FXML
+    private void actionCompiler() {
+        try {
+            moduleCompiler = new ModuleCompilerImpl(commandLineArea);
+
+            moduleCompiler.start();
+
+            compilerButton.setDisable(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Maven unable to compile");
         }
     }
 
@@ -127,15 +134,20 @@ public class PrimaryStageController {
                 CheckBox checkBox = new CheckBox();
                 moduleList.add(new TableViewItem(dir, dir.getName(), checkBox));
 
+                Module newModule = new Module();
+                newModule.setFile(dir);
                 if(dir.getName().equals(GeneralEnums.PriorityModules.BASE.toString())){
-                    theProject.getModuleList().add(new Module(dir,GeneralEnums.PriorityModules.BASE));
+                    newModule.setModulePriority(GeneralEnums.PriorityModules.BASE);
                 }else if(dir.getName().equals(GeneralEnums.PriorityModules.COMMON.toString())){
-                    theProject.getModuleList().add(new Module(dir,GeneralEnums.PriorityModules.BASE));
+                    newModule.setModulePriority(GeneralEnums.PriorityModules.COMMON);
                 }else if(dir.getName().equals(GeneralEnums.PriorityModules.ESB.toString())){
-                    theProject.getModuleList().add(new Module(dir,GeneralEnums.PriorityModules.BASE));
+                    newModule.setModulePriority(GeneralEnums.PriorityModules.ESB);
                 }else{
-                    theProject.getModuleList().add(new Module(dir,GeneralEnums.PriorityModules.BASE));
+                    newModule.setModulePriority(GeneralEnums.PriorityModules.OTHER);
                 }
+
+                newModule.setModuleSize(MavacUtility.getFileSizeWithAsync(dir));
+                theProject.getModuleList().add(newModule);
             }
 
             module.setCellValueFactory(new PropertyValueFactory<>("fileName"));
