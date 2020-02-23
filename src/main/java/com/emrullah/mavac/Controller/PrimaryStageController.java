@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,13 +30,14 @@ public class PrimaryStageController {
     @FXML public Button openPathButton;
     @FXML public Button synchronisationButton;
     @FXML public Button compilerButton;
-    @FXML public Button stopWatchingButton;
+    @FXML public Button resetButton;
     @FXML public ListView commandLineArea;
     @FXML public Label totalWatches;
     @FXML public Label totalModules;
     @FXML public TableColumn<TableViewItem, String> module;
     @FXML public TableColumn<TableViewItem, CheckBox> checkBox;
     @FXML public TableView registerList;
+    @FXML public ImageView processImage;
 
     private static Logger logger;
 
@@ -105,6 +107,10 @@ public class PrimaryStageController {
                     path);
 
             directoryWatchService.start();
+            compilerButton.setDisable(false);
+            synchronisationButton.setDisable(true);
+            totalWatches.setText(String.valueOf(directoryWatchService.getSubDirCount()));
+            processImage.setVisible(true);
 
 
         } catch (IOException e) {

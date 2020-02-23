@@ -33,7 +33,7 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
     public int subDirCount = 0;
 
     /**
-     * A simple no argument constructor for creating a <code>DirectoryWatchService</code>.
+     * A simple argument constructor for creating a <code>DirectoryWatchService</code>.
      *
      * @throws IOException If an I/O error occurs.
      */
@@ -259,4 +259,9 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
     private static String getThreadName() {
         return Thread.currentThread().getName();
     }
+
+    public int getSubDirCount() {
+        return subDirCount;
+    }
+
 }
