@@ -58,7 +58,7 @@
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="768.0" minWidth="1024.0" prefHeight="784.0" prefWidth="1024.0" VBox.vgrow="ALWAYS">
             <children>
                 <Button fx:id="synchronisationButton" disable="true" layoutX="471.0" layoutY="22.0" mnemonicParsing="false" onAction="#actionSynchronisation" prefHeight="25.0" prefWidth="102.0" text="Synchronisation" AnchorPane.leftAnchor="471.0" AnchorPane.topAnchor="22.0" />
-                <Button fx:id="compilerButton" disable="true" layoutX="587.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Compile" />
+                <Button fx:id="compilerButton" disable="true" layoutX="587.0" layoutY="22.0" mnemonicParsing="false" onAction="#actionCompiler" prefHeight="25.0" prefWidth="102.0" text="Compile" />
                 <Button fx:id="openPathButton" layoutX="356.0" layoutY="22.0" mnemonicParsing="false" onAction="#actionOpenPath" prefHeight="25.0" prefWidth="102.0" text="Open" AnchorPane.leftAnchor="356.0" AnchorPane.topAnchor="22.0" />
                 <Label layoutX="708.0" layoutY="48.0" text="Total watches :" />
                 <Label fx:id="totalWatches" layoutX="802.0" layoutY="49.0" text="0" />
@@ -66,7 +66,7 @@
                 <Label layoutX="709.0" layoutY="73.0" text="File changes :" />
                 <Label fx:id="totalModules" layoutX="802.0" layoutY="22.0" text="0" />
                 <Label layoutX="709.0" layoutY="21.0" text="Total modules :" />
-                <TableView fx:id="registerList" layoutY="-1.0" prefHeight="768.0" prefWidth="336.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="688.0" AnchorPane.topAnchor="-1.0">
+                <TableView fx:id="registerList" layoutY="-1.0" prefHeight="740.0" prefWidth="336.0" AnchorPane.bottomAnchor="29.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="688.0" AnchorPane.topAnchor="-1.0">
                     <columns>
                         <TableColumn fx:id="module" prefWidth="265.0" resizable="false" text="Modules" />
                         <TableColumn fx:id="checkBox" minWidth="0.0" prefWidth="82.0" resizable="false" text="Sync" />
@@ -77,7 +77,7 @@
                   <Image url="@sync_processing.gif" />
                </image>
             </ImageView>
-            <ListView fx:id="commandLineArea" layoutX="351.0" layoutY="97.0" prefHeight="670.0" prefWidth="693.0" />
+            <ListView fx:id="commandLineArea" layoutX="351.0" layoutY="97.0" prefHeight="643.0" prefWidth="668.0" />
             <Button fx:id="resetButton" layoutX="355.0" layoutY="63.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Reset" />
             </children>
         </AnchorPane>
