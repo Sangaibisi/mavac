@@ -1,7 +1,9 @@
 package com.emrullah.mavac.Controller.Watcher;
 
+import com.emrullah.mavac.Model.Project;
 import javafx.application.Platform;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,8 +29,8 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
     private final ConcurrentMap<WatchKey, Path> mWatchKeyToDirPathMap;
     private final ConcurrentMap<Path, Set<OnFileChangeListener>> mDirPathToListenersMap;
     private final ConcurrentMap<OnFileChangeListener, Set<PathMatcher>> mListenerToFilePatternsMap;
-
-    private ListView<String> listView;
+    private final Project theProject;
+    private final TextArea consoleOutput;
 
     public int subDirCount = 0;
 
@@ -37,9 +39,9 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
      *
      * @throws IOException If an I/O error occurs.
      */
-    public DirectoryWatchServiceImpl(ListView<String> listView) throws IOException {
-        this.listView = listView;
-
+    public DirectoryWatchServiceImpl(Project theProject,TextArea consoleOutput) throws IOException {
+        this.consoleOutput=consoleOutput;
+        this.theProject=theProject;
         mWatchService = FileSystems.getDefault().newWatchService();
         mIsRunning = new AtomicBoolean(false);
         mWatchKeyToDirPathMap = newConcurrentMap();
@@ -188,7 +190,8 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
 
         mListenerToFilePatternsMap.put(listener, patterns);
 
-        listView.getItems().add("Watching " + subDirCount + " sub directories under " + path);
+        theProject.getConsoleLog().append("Watching " + subDirCount + " sub directories under " + path);
+        consoleOutput.setText(theProject.getConsoleLog().toString());
         logger.debug(getThreadName() + " | Watching " + subDirCount + " sub directories under " + path);
     }
 
@@ -248,7 +251,7 @@ public class DirectoryWatchServiceImpl implements IDirectoryWatchService, Runnab
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                listView.getItems().add(item);
+                theProject.getConsoleLog().append(item);
             }
         });
     }

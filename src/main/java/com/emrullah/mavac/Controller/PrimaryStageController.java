@@ -1,7 +1,8 @@
 package com.emrullah.mavac.Controller;
 
 import com.emrullah.mavac.Base.ApplicationInitializer;
-import com.emrullah.mavac.Controller.Compiler.ModuleCompilerImpl;
+import com.emrullah.mavac.Controller.Compiler.ITaskExecutorListener;
+import com.emrullah.mavac.Utility.CommandExecutorUtil;
 import com.emrullah.mavac.Controller.Watcher.DirectoryWatchServiceImpl;
 import com.emrullah.mavac.Model.Module;
 import com.emrullah.mavac.Model.Project;
@@ -23,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PrimaryStageController {
@@ -32,7 +32,7 @@ public class PrimaryStageController {
     @FXML public Button synchronisationButton;
     @FXML public Button compilerButton;
     @FXML public Button resetButton;
-    @FXML public ListView commandLineArea;
+    @FXML public TextArea consoleOutput;
     @FXML public Label totalWatches;
     @FXML public Label totalModules;
     @FXML public TableColumn<TableViewItem, String> module;
@@ -42,8 +42,12 @@ public class PrimaryStageController {
 
     private static Logger logger;
 
+    private final static String COMMAND = "mvn clean install -Dmaven.test.skip";
+    private static final String COMMAND_PREFIX = "-> ";
+    private static final String NEW_LINE = "\n";
+
     private DirectoryWatchServiceImpl directoryWatchService;
-    private ModuleCompilerImpl moduleCompiler;
+    private CommandExecutorUtil moduleCompiler;
     private ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
     private ApplicationInitializer mainApp;
     private Project theProject;
@@ -65,7 +69,7 @@ public class PrimaryStageController {
         Path path = FileSystems.getDefault().getPath(theProject.getFile().getPath());
         processImage.setVisible(true);
         try {
-            directoryWatchService = new DirectoryWatchServiceImpl(commandLineArea);
+            directoryWatchService = new DirectoryWatchServiceImpl(theProject,consoleOutput);
             directoryWatchService.register(
                     new DirectoryWatchServiceImpl.OnFileChangeListener() {
                         @Override
@@ -74,7 +78,8 @@ public class PrimaryStageController {
                             if(!filePath.toString().endsWith(".watchsrvc"))
                                 Platform.runLater(() -> {
                                     theProject.getChangedCompileList().add(filePath);
-                                    commandLineArea.getItems().add("\nNew file created at " + filePath.toAbsolutePath().toString());
+                                    theProject.getConsoleLog().append("\nNew file created at " + filePath.toAbsolutePath().toString());
+                                    refreshConsole();
                                 });
                         }
 
@@ -83,7 +88,8 @@ public class PrimaryStageController {
                             logger.debug("File Modify Event | " + filePath);
                             Platform.runLater(() -> {
                                 theProject.getChangedCompileList().add(filePath);
-                                commandLineArea.getItems().add("\nFile modify event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
+                                theProject.getConsoleLog().append("\nFile modify event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
+                                refreshConsole();
                             });
                         }
 
@@ -93,14 +99,14 @@ public class PrimaryStageController {
                             if(!filePath.toString().endsWith(".watchsrvc"))
                                 Platform.runLater(() -> {
                                     theProject.getChangedCompileList().add(filePath);
-                                    commandLineArea.getItems().add("\nFile delete event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
+                                    theProject.getConsoleLog().append("\nFile delete event " + filePath.getFileName().toAbsolutePath().getFileName().toString());
+                                    refreshConsole();
                                 });
                         }
                     },
                     path);
 
             directoryWatchService.start();
-
             compilerButton.setDisable(false);
             synchronisationButton.setDisable(true);
             totalWatches.setText(String.valueOf(directoryWatchService.getSubDirCount()));
@@ -112,17 +118,33 @@ public class PrimaryStageController {
 
     @FXML
     private void actionCompiler() {
-        try {
-            moduleCompiler = new ModuleCompilerImpl(commandLineArea);
+                theProject.getConsoleLog().append(COMMAND_PREFIX + COMMAND);
+                theProject.getConsoleLog().append(NEW_LINE);
 
-            moduleCompiler.start();
+                refreshConsole();
 
-            compilerButton.setDisable(true);
+                String path="";
+                // execute
+                CommandExecutorUtil.executeCommand(
+                        theProject,
+                        path,
+                        COMMAND,
+                        new ITaskExecutorListener() {
+                            @Override
+                            public void executed() {
+                                // refresh
+                                refreshConsole();
+                            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("Maven unable to compile");
-        }
+                            @Override
+                            public void updateConsole() {
+                                refreshConsole();
+                            }
+                        });
+    }
+
+    public void refreshConsole() {
+        consoleOutput.setText(theProject.getConsoleLog().toString());
     }
 
     private void addItemsToTableView(){
