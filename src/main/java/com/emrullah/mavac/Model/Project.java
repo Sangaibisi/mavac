@@ -11,6 +11,7 @@ public class Project extends Module {
     private List<Module> moduleList;
     private HashSet<Path> changedCompileList;
     private String projectName;
+    private StringBuilder consoleLog = new StringBuilder();
 
     public Project(File file) {
         super(file);
@@ -40,5 +41,13 @@ public class Project extends Module {
 
     public void setChangedCompileList(HashSet<Path> changedCompileList) {
         this.changedCompileList = changedCompileList;
+    }
+
+    public StringBuilder getConsoleLog() {
+        return consoleLog;
+    }
+
+    public void setConsoleLog(StringBuilder consoleLog) {
+        this.consoleLog = consoleLog;
     }
 }
