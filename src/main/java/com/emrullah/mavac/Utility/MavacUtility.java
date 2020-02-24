@@ -10,7 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -77,5 +79,17 @@ public class MavacUtility {
         }
 
         return findPOMPath(new File(file.getParent()));
+    }
+
+    public static HashSet<String> normalizationOfChangedModuleList(HashSet<Path> changedModules) {
+        if(changedModules.isEmpty()) return null;
+
+        HashSet<String> determinedList = new HashSet<String>();
+        for (Path path : changedModules) {
+            String pomPath = findPOMPath(new File(path.toString()));
+            if (pomPath != null && !pomPath.isEmpty())
+                determinedList.add(pomPath);
+        }
+        return determinedList;
     }
 }
