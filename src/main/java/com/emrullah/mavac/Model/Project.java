@@ -12,7 +12,7 @@ public class Project extends Module {
     private HashSet<Path> changedCompileList;
 
     private StringBuilder consoleLog = new StringBuilder();
-    private String projectName;
+
     private String mavenHome;
 
     public Project(File file) {
@@ -27,14 +27,6 @@ public class Project extends Module {
 
     public void setModuleList(List<Module> moduleList) {
         this.moduleList = moduleList;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
     }
 
     public HashSet<Path> getChangedCompileList() {
@@ -58,6 +50,6 @@ public class Project extends Module {
     }
 
     public void setMavenHome(String mavenHome) {
-        this.mavenHome = mavenHome;
+        this.mavenHome = mavenHome + "/bin/mvn";
     }
 }
