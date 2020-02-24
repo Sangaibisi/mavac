@@ -3,6 +3,8 @@ package com.emrullah.mavac.Utility;
 import com.emrullah.mavac.Controller.Compiler.ITaskExecutorListener;
 import com.emrullah.mavac.Controller.Compiler.UpdaterState;
 import com.emrullah.mavac.Model.Project;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommandExecutorUtil {
 
-
+    private static Logger logger = LogManager.getContext().getLogger(MavacUtility.class.getName());
     private static Runtime runtime = Runtime.getRuntime();
 
     private final AtomicBoolean mIsRunning;
@@ -25,7 +27,7 @@ public class CommandExecutorUtil {
                         () -> {
                             UpdaterState updaterState = startConsoleUpdater(listener);
                             try {
-                                String maven = "generateMavenLocation()";
+                                String maven = theProject.getMavenHome();
                                 Process process = null;
                                     process =
                                             runtime.exec(
@@ -41,6 +43,7 @@ public class CommandExecutorUtil {
                                         new BufferedReader(new InputStreamReader(process.getInputStream()));
                                 String buffer = reader.readLine();
                                 while (buffer != null) {
+                                    logger.info(buffer);
                                     theProject.getConsoleLog().append(buffer);
                                     theProject.getConsoleLog().append("\n");
                                     buffer = reader.readLine();
