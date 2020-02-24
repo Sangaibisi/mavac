@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -20,32 +19,12 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="New" />
-                        <MenuItem mnemonicParsing="false" text="Open…" />
-                        <Menu mnemonicParsing="false" text="Open Recent" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                        <MenuItem mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As…" />
-                        <MenuItem mnemonicParsing="false" text="Revert" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Preferences…" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Quit" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" text="Settings">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Undo" />
-                        <MenuItem mnemonicParsing="false" text="Redo" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Cut" />
-                        <MenuItem mnemonicParsing="false" text="Copy" />
-                        <MenuItem mnemonicParsing="false" text="Paste" />
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Select All" />
-                        <MenuItem mnemonicParsing="false" text="Unselect All" />
+                        <MenuItem mnemonicParsing="false" onAction="#actionSetMavenHome" text="Set Maven Home" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -72,11 +51,15 @@
                         <TableColumn fx:id="checkBox" minWidth="0.0" prefWidth="82.0" resizable="false" text="Sync" />
                     </columns>
                 </TableView>
-            <ImageView fx:id="processImage" fitHeight="79.0" fitWidth="135.0" layoutX="884.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" visible="false">
-               <image>
-                  <Image url="@sync_processing.gif" />
-               </image>
-            </ImageView>
+            <AnchorPane layoutX="921.0" layoutY="11.0">
+               <children>
+                  <ImageView fx:id="processImage" fitHeight="79.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                     <image>
+                        <Image url="@img/sync_processing.gif" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <Button fx:id="resetButton" layoutX="355.0" layoutY="63.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Reset" />
             <TextArea fx:id="consoleOutput" editable="false" layoutX="355.0" layoutY="94.0" prefHeight="650.0" prefWidth="666.0" />
             </children>
