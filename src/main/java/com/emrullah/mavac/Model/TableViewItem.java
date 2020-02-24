@@ -1,4 +1,4 @@
-package com.emrullah.nightwatch.Model;
+package com.emrullah.mavac.Model;
 
 import javafx.scene.control.CheckBox;
 

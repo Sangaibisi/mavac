@@ -1,7 +1,6 @@
 package com.emrullah.mavac.Model;
 
 import com.emrullah.mavac.Utility.GeneralEnums;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 
