@@ -2,14 +2,11 @@ package com.emrullah.mavac.Base;
 
 import com.emrullah.mavac.Controller.PrimaryStageController;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +37,7 @@ public class ApplicationInitializer extends Application {
         this.primaryStage.setTitle("NightWatcher Service");
         this.primaryStage.setResizable(false);
         this.primaryStage.centerOnScreen();
-        this.primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("crow.ico")));
+        this.primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/crow.ico")));
 
         initMainWindowLayout();
     }
