@@ -15,13 +15,21 @@ public class CommandExecutorUtil {
     private static Logger logger = LogManager.getContext().getLogger(MavacUtility.class.getName());
     private static Runtime runtime = Runtime.getRuntime();
 
+    private final static String COMMAND = "clean install -Dmaven.test.skip";
+    private final static String COMMAND_PREFIX = "-> ";
+    private final static String NEW_LINE = "\n";
+
     private final AtomicBoolean mIsRunning;
 
     public CommandExecutorUtil() {
         mIsRunning = new AtomicBoolean(false);
     }
 
-    public static void executeCommand(Project theProject, String path, final String command, final ITaskExecutorListener listener) {
+    public static void executeCommand(Project theProject, String path, final ITaskExecutorListener listener) {
+        theProject.getConsoleLog().append(COMMAND_PREFIX + COMMAND);
+        theProject.getConsoleLog().append(NEW_LINE);
+        listener.updateConsole();
+
         Thread executor =
                 new Thread(
                         () -> {
@@ -34,7 +42,7 @@ public class CommandExecutorUtil {
                                                     "cmd.exe /c "
                                                             + maven
                                                             + " "
-                                                            + command
+                                                            + COMMAND
                                                             + " -f "
                                                             + path
                                                             + "/pom.xml");
