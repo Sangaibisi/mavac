@@ -10,8 +10,10 @@ public class Project extends Module {
 
     private List<Module> moduleList;
     private HashSet<Path> changedCompileList;
-    private String projectName;
+
     private StringBuilder consoleLog = new StringBuilder();
+    private String projectName;
+    private String mavenHome;
 
     public Project(File file) {
         super(file);
@@ -49,5 +51,13 @@ public class Project extends Module {
 
     public void setConsoleLog(StringBuilder consoleLog) {
         this.consoleLog = consoleLog;
+    }
+
+    public String getMavenHome() {
+        return mavenHome;
+    }
+
+    public void setMavenHome(String mavenHome) {
+        this.mavenHome = mavenHome;
     }
 }
