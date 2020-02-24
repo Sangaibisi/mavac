@@ -8,7 +8,7 @@ import com.emrullah.mavac.Model.Module;
 import com.emrullah.mavac.Model.Project;
 import com.emrullah.mavac.Utility.GeneralEnums;
 import com.emrullah.mavac.Utility.MavacUtility;
-import com.emrullah.nightwatch.Model.TableViewItem;
+import com.emrullah.mavac.Model.TableViewItem;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 
 public class PrimaryStageController {
@@ -42,12 +43,7 @@ public class PrimaryStageController {
 
     private static Logger logger;
 
-    private final static String COMMAND = "mvn clean install -Dmaven.test.skip";
-    private static final String COMMAND_PREFIX = "-> ";
-    private static final String NEW_LINE = "\n";
-
     private DirectoryWatchServiceImpl directoryWatchService;
-    private CommandExecutorUtil moduleCompiler;
     private ObservableList<TableViewItem> moduleList = FXCollections.observableArrayList();
     private ApplicationInitializer mainApp;
     private Project theProject;
@@ -117,33 +113,45 @@ public class PrimaryStageController {
     }
 
     @FXML
-    private void actionCompiler() {
-                theProject.getConsoleLog().append(COMMAND_PREFIX + COMMAND);
-                theProject.getConsoleLog().append(NEW_LINE);
-
-                refreshConsole();
-
-                String path="";
-                // execute
-                CommandExecutorUtil.executeCommand(
-                        theProject,
-                        path,
-                        COMMAND,
-                        new ITaskExecutorListener() {
-                            @Override
-                            public void executed() {
-                                // refresh
-                                refreshConsole();
-                            }
-
-                            @Override
-                            public void updateConsole() {
-                                refreshConsole();
-                            }
-                        });
+    private void actionSetMavenHome(){
+        String path = MavacUtility.getDirectoryPathWithChooser(mainApp);
+        theProject.setMavenHome(path);
     }
 
-    public void refreshConsole() {
+    @FXML
+    private void actionCompiler() {
+        if (theProject.getMavenHome() == null || theProject.getMavenHome().isEmpty()) {
+            MavacUtility.createAlert(AlertType.WARNING, "Maven", "WARNING", "Set maven home before run mvn commands\nSetting -> Set Maven Home");
+            return;
+        }
+
+        //TODO: Make a loop here for every pom.xml
+        HashSet<String> deploymentList = MavacUtility.normalizationOfChangedModuleList(theProject.getChangedCompileList());
+
+        if(deploymentList == null || deploymentList.isEmpty()){
+            MavacUtility.createAlert(AlertType.WARNING, "Complication", "ERROR", "Any module couldn't compiled. There is no changes in given path");
+            return;
+        }
+
+        // execute
+        CommandExecutorUtil.executeCommand(
+                theProject,
+                deploymentList.iterator().next(),
+                new ITaskExecutorListener() {
+                    @Override
+                    public void executed() {
+                        // refresh
+                        refreshConsole();
+                    }
+
+                    @Override
+                    public void updateConsole() {
+                        refreshConsole();
+                    }
+                });
+    }
+
+    private void refreshConsole() {
         consoleOutput.setText(theProject.getConsoleLog().toString());
     }
 
