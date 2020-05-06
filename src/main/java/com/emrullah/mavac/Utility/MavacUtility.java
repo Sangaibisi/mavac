@@ -73,6 +73,8 @@ public class MavacUtility {
     }
 
     public static String findPOMPath(File file){
+        if(!file.isDirectory()) return null;
+
         String path = file.getPath();
         if(!Arrays.asList(file.listFiles()).stream().filter(p->p.getName().contains("pom.xml")).collect(Collectors.toList()).isEmpty()){
             return path;
